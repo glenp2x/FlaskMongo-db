@@ -1,0 +1,11 @@
+Flask
+bson
+dnspython
+flask_wtf
+wtforms
+bcrypt
+Flask-PyMongo
+flask-mongoengine
+mongoengine
+
+

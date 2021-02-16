@@ -1,0 +1,242 @@
+from flask import Flask, flash, render_template, redirect, url_for, session, request
+from flask_pymongo import PyMongo
+import bcrypt
+import urllib
+from datetime import datetime
+from forms import CustomerSignupForm, CustomerLoginForm
+from flask_mongoengine import MongoEngine
+import mongoengine as me
+
+import gc
+
+
+app = Flask(__name__)
+
+app.config['MONGODB_SETTINGS'] = {"db": "myapp", }
+db = MongoEngine(app)
+
+app.config['MONGO_DBNAME'] = 'inventory_db'
+app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote("Password@1") + \
+                        "@cluster0.qyjhe.mongodb.net/inventory_db?retryWrites=true&w=majority"
+
+mongo = PyMongo(app)
+
+
+"""class Customer(me.Document):
+    username = me.StringField(required=True)
+    email = me.StringField(required=True)
+    password = me.StringField(required=True)
+    first_name = me.StringField()
+    last_name = me.StringField()
+    phone_number = me.StringField()
+
+
+def add_mike():
+    mike = Customer(username="mike_doe@mail.com",
+                    email="mike_doe@mail.com",
+                    first_name="Mike",
+                    last_name="Doe",
+                    password="password")
+    mike.save()"""
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html", error=e)
+
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template("405.html", error=e)
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template("500.html", error=e)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html', title='Home')
+
+
+@app.route('/signup_customer/', methods=["GET", "POST"])
+def signup_customer():
+    try:
+        form = CustomerSignupForm()
+        if request.method == "POST":
+            customers = mongo.db.customers
+            email = form.email.data
+            password = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt())
+            now = datetime.now()
+            formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+            existing_customer = customers.find_one({'email': email})
+
+            if existing_customer:
+                error = "That email is already registered. Sign in or choose another email."
+                flash(error)
+                return render_template("signup_customer.html", title='Customer Signup', form=form)
+            else:
+                customers.insert({'email': email, 'password': password, 'username': email, 'active': 1, 'create_date': formatted_date})
+                session['logged_in'] = True
+                session['email'] = email
+                flash("Welcome " + session['email'] + " Thanks for signing up!")
+                return redirect(url_for('index'))
+
+        return render_template('signup_customer.html', title='Customer Signup', form=form)
+
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/login_customer/', methods=["GET", "POST"])
+def login_customer():
+    try:
+        form = CustomerLoginForm()
+        if request.method == "POST":
+            customers = mongo.db.customers
+            email = form.email.data
+            customer = customers.find_one({'email': email})
+            if customer:
+                if bcrypt.checkpw(form.password.data.encode('utf-8'), customer['password']):
+                    if customer['active']:
+                        session['logged_in'] = True
+                        session['email'] = email
+                        flash('Logged in successfully!')
+                        return redirect(url_for('index'))
+                    else:
+                        flash("Account is not active")
+                else:
+                    flash("Invalid credentials. Try again")
+            else:
+                flash("Invalid credentials. Try again")
+        return render_template('login_customer.html', title='Login Customer', form=form)
+    except Exception as e:
+        return str(e)
+
+
+@app.route("/logout/")
+def logout():
+    session.clear()
+    flash("You have been logged out!")
+    gc.collect()
+    return redirect(url_for('index'))
+
+
+@app.route('/products/')
+def products():
+    try:
+        products_list = mongo.db.products
+        all_products = products_list.find({})
+        return render_template('products.html', title='Products', products=all_products)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/my_account/')
+def my_account():
+    return render_template('my_account.html', title='Account')
+
+
+@app.route('/add', methods=['POST'])
+def add_product_to_cart():
+    try:
+        products_list = mongo.db.products
+        quantity = int(request.form['quantity'])
+        barcode = request.form['barcode']
+        # validate the received values
+        if quantity and barcode and request.method == 'POST':
+            row = products_list.find_one({'barcode': barcode})
+
+            itemArray = {
+                row['barcode']: {'product_name': row['product_name'], 'barcode': row['barcode'], 'quantity': quantity,
+                                 'price': row['price'], 'image': row['image'], 'total_price': quantity * row['price']}}
+
+            all_total_price = 0
+            all_total_quantity = 0
+
+            session.modified = True
+            if 'cart_item' in session:
+                if row['barcode'] in session['cart_item']:
+                    for key, value in session['cart_item'].items():
+                        if row['barcode'] == key:
+                            old_quantity = session['cart_item'][key]['quantity']
+                            total_quantity = old_quantity + quantity
+                            session['cart_item'][key]['quantity'] = total_quantity
+                            session['cart_item'][key]['total_price'] = total_quantity * row['price']
+                else:
+                    session['cart_item'] = array_merge(session['cart_item'], itemArray)
+
+                for key, value in session['cart_item'].items():
+                    individual_quantity = int(session['cart_item'][key]['quantity'])
+                    individual_price = float(session['cart_item'][key]['total_price'])
+                    all_total_quantity = all_total_quantity + individual_quantity
+                    all_total_price = all_total_price + individual_price
+            else:
+                session['cart_item'] = itemArray
+                all_total_quantity = all_total_quantity + quantity
+                all_total_price = all_total_price + quantity * row['price']
+
+            session['all_total_quantity'] = all_total_quantity
+            session['all_total_price'] = all_total_price
+
+            flash("Product added to cart")
+            return redirect(request.referrer)
+        else:
+            return 'Error while adding item to cart'
+    except Exception as e:
+        print(e)
+
+
+@app.route('/empty')
+def empty_cart():
+    try:
+        session.clear()
+        return redirect(url_for('products'))
+    except Exception as e:
+        print(e)
+
+
+@app.route('/delete/<string:barcode>')
+def delete_product(barcode):
+    try:
+        all_total_price = 0
+        all_total_quantity = 0
+        session.modified = True
+
+        for item in session['cart_item'].items():
+            if item[0] == barcode:
+                session['cart_item'].pop(item[0], None)
+                if 'cart_item' in session:
+                    for key, value in session['cart_item'].items():
+                        individual_quantity = int(session['cart_item'][key]['quantity'])
+                        individual_price = float(session['cart_item'][key]['total_price'])
+                        all_total_quantity = all_total_quantity + individual_quantity
+                        all_total_price = all_total_price + individual_price
+                break
+
+        if all_total_quantity == 0:
+            session.clear()
+        else:
+            session['all_total_quantity'] = all_total_quantity
+            session['all_total_price'] = all_total_price
+
+        # return redirect('/')
+        return redirect(url_for('.products'))
+    except Exception as e:
+        print(e)
+
+
+def array_merge(first_array, second_array):
+    if isinstance(first_array, list) and isinstance(second_array, list):
+        return first_array + second_array
+    elif isinstance(first_array, dict) and isinstance(second_array, dict):
+        return dict(list(first_array.items()) + list(second_array.items()))
+    elif isinstance(first_array, set) and isinstance(second_array, set):
+        return first_array.union(second_array)
+    return False
+
+
+if __name__ == "__main__":
+    app.secret_key = 'mysecret'
+    app.run()

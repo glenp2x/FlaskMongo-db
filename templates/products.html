@@ -1,0 +1,45 @@
+{% extends 'header.html' %}
+{% include 'includes/products_layout.html' %}
+
+{% block content %}
+<div class ="container-fluid">
+	<div id="product-grid">
+		<div class="txt-heading">Products</div>
+		<div class="row">
+			{% for product in products %}
+				<div class="responsecard">
+					<form method="POST" action="/add">
+						<div class="imagecontainer">
+							<a href="#">
+								<img class ="imagetile" src="/static/images/ProductImages/{{ product['image'] }}" alt="Product-Image" border="0">
+							</a>
+						</div>
+						<div class="product-tile-footer">
+							<p class="nametile">{{product['product_name']}}, {{product['size']}}</p>
+							<div class="rating">
+								<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+							</div>
+							<hr>
+							<p class="pricetile">${{ product['price'] }}</p>
+							<div>
+								<input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
+								<input type="hidden" name="price" value="{{ product['price'] }}"/>
+								<div class ="row">
+									<input type="number" name="quantity" value="1" min="1" max="{{ product['qty_in_stk'] }}"/>
+									<input type="submit" value="Add" class=" btn btn-info" />
+								</div>
+
+
+							</div>
+						</div>
+					</form>
+				</div>
+
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% include 'includes/products_suggestions.html' %}
+
+{% endblock content %}
