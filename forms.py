@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 
@@ -16,3 +16,13 @@ class CustomerLoginForm(FlaskForm):
     password = PasswordField('Password', [DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Log in')
+
+
+class AddProductForm(FlaskForm):
+    product_name = StringField('Product', [DataRequired()])
+    barcode = StringField('Barcode')
+    brand = StringField('Brand')
+    price = FloatField('Price')
+    description = TextAreaField('Description')
+    image = TextAreaField('Image')
+    submit = SubmitField('Add')
