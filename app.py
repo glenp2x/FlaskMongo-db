@@ -3,7 +3,7 @@ from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime
-from forms import CustomerSignupForm, CustomerLoginForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm
 from flask_mongoengine import MongoEngine
 import mongoengine as me
 
@@ -21,23 +21,21 @@ app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote("Password@
 
 mongo = PyMongo(app)
 
-
-"""class Customer(me.Document):
-    username = me.StringField(required=True)
-    email = me.StringField(required=True)
-    password = me.StringField(required=True)
-    first_name = me.StringField()
-    last_name = me.StringField()
-    phone_number = me.StringField()
-
-
-def add_mike():
-    mike = Customer(username="mike_doe@mail.com",
-                    email="mike_doe@mail.com",
-                    first_name="Mike",
-                    last_name="Doe",
-                    password="password")
-    mike.save()"""
+# still working on this
+"""
+@app.route('/add/<string:username>/<string:email>/<string:password>/<string:first_name>', methods=['GET'])
+def add(username, email, password, first_name):
+    customer = mongo.db.customers
+    customer.insert(
+        {
+            'username': username,
+            'email': email,
+            'password': password,
+            'first_name': first_name
+        }
+    )
+    return redirect(url_for('products'))
+"""
 
 
 @app.errorhandler(404)
@@ -136,6 +134,32 @@ def products():
 @app.route('/my_account/')
 def my_account():
     return render_template('my_account.html', title='Account')
+
+
+@app.route('/add_product/', methods=["GET", "POST"])
+def add_product():
+    try:
+        form = AddProductForm()
+        if request.method == "POST":
+            products_list = mongo.db.products
+            product_name = form.product_name.data
+            barcode = form.barcode.data
+            brand = form.brand.data
+            price = form.price.data
+            description = form.description.data
+            image = form.image.data
+
+            products_list.insert(
+                {'product_name': product_name, 'barcode': barcode, 'brand': brand, 'price': price,
+                 'description': description, 'image': image}
+            )
+            flash(product_name + " added!")
+            return redirect(url_for('index'))
+
+        return render_template('add_product.html', title='Add Product', form=form)
+
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/add', methods=['POST'])
