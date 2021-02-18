@@ -29,7 +29,12 @@
 					{% if session.logged_in %}
 						<div class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<i class="fas fa-user-circle"></i>Hi, {{session['email']}}
+								<i class="fas fa-user-circle"></i>Hi,
+								{% if session['first_name']%}
+									{{session['first_name']}}
+								{% else %}
+									{{session['email']}}
+								{% endif %}
 							</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 								<a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Log out</a>

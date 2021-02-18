@@ -12,3 +12,29 @@ User: Create account (Requiring Administrator approval), Create, Read, Update an
 View reports and dashboards. 
 
 Administrator: Perform administrative functions.
+
+
+To do
+
+Home page
+Products Page
+Search Page
+Login page
+Register page
+add product page
+add function products(list of categories)
+confirm password (fix)
+registration form
+my account will have form for user information
+Add image to the product
+css of product page
+Payments page(save info)
+register and login page for users(
+Orders
+)
+Admin pages (
+CRUD product
+CRUD users
+Dashboard & Reports
+)
+
