@@ -12,3 +12,31 @@ User: Create account (Requiring Administrator approval), Create, Read, Update an
 View reports and dashboards. 
 
 Administrator: Perform administrative functions.
+
+
+To do
+
+Home page - Glenda
+Products Page
+Search Page
+Login page
+Register page
+add product page
+add function products(list of categories) - Jamiu
+confirm password (fix) - Jamiu
+my account will have form for user information - Vahida
+css of product page
+Payments page(save info)
+register and login page for users
+Orders
+upload image to add products page - Vahida
+Process Cart-to-orders
+Admin pages (
+CRUD product
+CRUD users
+Dashboard & Reports
+)
+footer - (contact us page, social media and other links)
+
+Extras
+
