@@ -29,7 +29,7 @@ my account will have form for user information - Vahida
 css of product page
 Payments page(save info)
 register and login page for users
-Orders - cust_name, cart, fees, delivery type, complete personal information ?address, delivery/pickup time
+Orders - customer_name, cart, fees, delivery type, complete personal information ?address, delivery/pickup time
 upload image to add products page - Vahida
 Process Cart-to-orders
 Admin pages (
