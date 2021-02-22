@@ -37,6 +37,7 @@ CRUD users
 Dashboard & Reports
 )
 footer - (contact us page, social media and other links)
+dynamically set qty_in_stk (reduce when ordered or added to cart)
 
 Extras
 
