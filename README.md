@@ -22,13 +22,14 @@ Search Page
 Login page
 Register page
 add product page
-add function products(list of categories) - Jamiu
-confirm password (fix) - Jamiu
+add products function(list of categories) - Jamiu
+confirm password (fix) - Jamiu fixed
+format cart total - Jamiu fixed
 my account will have form for user information - Vahida
 css of product page
 Payments page(save info)
 register and login page for users
-Orders
+Orders - customer_name, cart, fees, delivery type, complete personal information ?address, delivery/pickup time
 upload image to add products page - Vahida
 Process Cart-to-orders
 Admin pages (
@@ -37,6 +38,7 @@ CRUD users
 Dashboard & Reports
 )
 footer - (contact us page, social media and other links)
+dynamically set qty_in_stk (reduce when ordered or added to cart)
 
 Extras
 

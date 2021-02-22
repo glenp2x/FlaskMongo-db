@@ -65,6 +65,23 @@
 						</div>
 					</div>
 					<div id="my_right_sidenav" class="right_sidenav">
+
+						<a href="javascript:void(0)" class="closebtn" onclick="close_right_sidenav()">&times;</a>
+						<div class="side_cart">
+							<div id="shopping-cart">
+								<h4> <i class="fas fa-shopping-cart"></i> Shopping Cart</h4>
+								<small>
+								{% if 'cart_item' in session %}
+								<a id="btnEmpty" href="{{ url_for('empty_cart') }}">Empty Cart</a>
+								<table class="tbl-cart" cellpadding="10" cellspacing="1">
+								<tbody>
+									<tr>
+										<th style="text-align:center;" width="5%"> </th>
+										<th style="text-align:left;">Item</th>
+										<th style="text-align:right;" width="10%">Quantity</th>
+										<th style="text-align:right;" width="15%">Unit Price</th>
+										<th style="text-align:right;" width="5%"> </th>
+
 					<a href="javascript:void(0)" class="closebtn" onclick="close_right_sidenav()">&times;</a>
 					<div class="side_cart">
 						<div id="shopping-cart">
@@ -97,26 +114,44 @@
 												<i class="fas fa-trash-alt" ></i>
 											</a>
 										</td>
+
 									</tr>
-								{% endfor %}
-								<tr>
-									<td colspan="2" align="right">Total:</td>
-									<td align="right">{{ session['all_total_quantity'] }}</td>
-									<td align="right" colspan="2"><strong>$ {{ session['all_total_price'] }}</strong></td>
-									<td></td>
-								</tr>
-							</tbody>
-							</table>
-							<button class="btn btn-info btn-block">Checkout <i class="fas fa-truck"></i></button>
+									{% for key, val in session['cart_item'].items() %}
+										{% set product_name = session['cart_item'][key]['product_name'] %}
+										{% set quantity = session['cart_item'][key]['quantity'] %}
+										{% set price = session['cart_item'][key]['price'] %}
+										{% set item_price = session['cart_item'][key]['total_price'] %}
+										{% set image = val['image'] %}
+										<tr>
+											<td><img src="/static/images/ProductImages/{{ image }}" class="cart-item-image" /></td>
+											<td style="text-align:left;">{{ product_name }}</td>
+											<td style="text-align:right;">{{ quantity }}</td>
+											<td style="text-align:right;">${{ price }}</td>
+											<td style="text-align:right;">
+												<a href="{{ url_for('.delete_product', barcode=session['cart_item'][key]['barcode']) }}">
+													<i class="fas fa-trash-alt" ></i>
+												</a>
+											</td>
+										</tr>
+									{% endfor %}
+									<tr>
+										<td colspan="2" align="right"><strong>Total:</strong></td>
+										<td align="right"><strong>{{ session['all_total_quantity'] }}</strong></td>
+										<td align="right" colspan="2"><strong>$ {{ session['all_total_price'] }}</strong></td>
+										<td></td>
+									</tr>
+								</tbody>
+								</table>
+								<button class="btn btn-info btn-block">Checkout <i class="fas fa-truck"></i></button>
 
-							{% else: %}
-								<div class="no-records">Your Cart is Empty</div>
-							{% endif %}
-							</small>
+								{% else: %}
+									<div class="no-records">Your Cart is Empty</div>
+								{% endif %}
+								</small>
+							</div>
 						</div>
-					</div>
 
-				</div>
+					</div>
 
 				<a style="cursor:pointer" class="nav-item nav-link" onclick="open_right_sidenav()"><i class="fas fa-shopping-cart" ></i> Cart</a>
 
