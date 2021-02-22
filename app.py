@@ -100,6 +100,7 @@ def login_customer():
                     if customer['active']:
                         session['logged_in'] = True
                         session['email'] = email
+                        session['first_name'] = customer['first_name']
                         flash('Logged in successfully!')
                         return redirect(url_for('index'))
                     else:
@@ -146,11 +147,12 @@ def add_product():
             barcode = form.barcode.data
             brand = form.brand.data
             price = form.price.data
+            size = form.size.data
             description = form.description.data
             image = form.image.data
 
             products_list.insert(
-                {'product_name': product_name, 'barcode': barcode, 'brand': brand, 'price': price,
+                {'product_name': product_name, 'barcode': barcode, 'brand': brand, 'price': price, 'size': size,
                  'description': description, 'image': image}
             )
             flash(product_name + " added!")
