@@ -212,7 +212,7 @@ def add_product_to_cart():
                 all_total_price = all_total_price + quantity * row['price']
 
             session['all_total_quantity'] = all_total_quantity
-            session['all_total_price'] = all_total_price
+            session['all_total_price'] = '{:,.2f}'.format(all_total_price)
 
             flash("Product added to cart")
             return redirect(request.referrer)
@@ -269,6 +269,12 @@ def array_merge(first_array, second_array):
     elif isinstance(first_array, set) and isinstance(second_array, set):
         return first_array.union(second_array)
     return False
+
+
+"""@app.route('/checkout', methods=['POST'])
+def checkout():
+    try:
+        products_list = mongo.db.products"""
 
 
 if __name__ == "__main__":
