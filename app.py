@@ -271,12 +271,6 @@ def array_merge(first_array, second_array):
     return False
 
 
-"""@app.route('/checkout', methods=['POST'])
-def checkout():
-    try:
-        products_list = mongo.db.products"""
-
-
 if __name__ == "__main__":
     app.secret_key = 'mysecret'
     app.run()
