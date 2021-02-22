@@ -37,6 +37,9 @@ Dashboard & Reports
 )
 footer - (contact us page, social media and other links)
 dynamically set qty_in_stk (reduce when ordered or added to cart)
+add to cart from homepage (products on sale) should remain on the same page and update and show cart
+extend header to the home page - and use {{super}}??
+resolve css conflicts in footer and merge css files?
 
 Extras
 
