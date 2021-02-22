@@ -23,8 +23,6 @@ Login page
 Register page
 add product page
 add products function(list of categories) - Jamiu
-confirm password (fix) - Jamiu fixed
-format cart total - Jamiu fixed
 my account will have form for user information - Vahida
 css of product page
 Payments page(save info)
