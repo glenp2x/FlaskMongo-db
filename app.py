@@ -65,21 +65,29 @@ def signup_customer():
         if request.method == "POST":
             customers = mongo.db.customers
             email = form.email.data
-            password = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt())
+            password = form.password.data
+            confirm_password = form.confirm_password.data
+            hashed_password = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt())
             now = datetime.now()
             formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
             existing_customer = customers.find_one({'email': email})
 
-            if existing_customer:
-                error = "That email is already registered. Sign in or choose another email."
+            if password == confirm_password:
+                if existing_customer:
+                    error = "That email is already registered. Sign in or choose another email."
+                    flash(error)
+                    return render_template("signup_customer.html", title='Customer Signup', form=form)
+                else:
+                    customers.insert_one({'email': email, 'password': hashed_password, 'username': email, 'active': 1,
+                                          'create_date': formatted_date})
+                    session['logged_in'] = True
+                    session['email'] = email
+                    flash("Welcome " + session['email'] + " Thanks for signing up!")
+                    return redirect(url_for('index'))
+            else:
+                error = "Passwords must match."
                 flash(error)
                 return render_template("signup_customer.html", title='Customer Signup', form=form)
-            else:
-                customers.insert({'email': email, 'password': password, 'username': email, 'active': 1, 'create_date': formatted_date})
-                session['logged_in'] = True
-                session['email'] = email
-                flash("Welcome " + session['email'] + " Thanks for signing up!")
-                return redirect(url_for('index'))
 
         return render_template('signup_customer.html', title='Customer Signup', form=form)
 

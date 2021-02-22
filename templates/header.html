@@ -82,12 +82,13 @@
 									<th style="text-align:right;" width="5%"> </th>
 								</tr>
 								{% for key, val in session['cart_item'].items() %}
+									{% set product_name = session['cart_item'][key]['product_name'] %}
 									{% set quantity = session['cart_item'][key]['quantity'] %}
 									{% set price = session['cart_item'][key]['price'] %}
 									{% set item_price = session['cart_item'][key]['total_price'] %}
-									{% set product_image = val['product_image'] %}
+									{% set image = val['image'] %}
 									<tr>
-										<td><img src="/static/images/ProductImages/{{ product_image }}" class="cart-item-image" /></td>
+										<td><img src="/static/images/ProductImages/{{ image }}" class="cart-item-image" /></td>
 										<td style="text-align:left;">{{ product_name }}</td>
 										<td style="text-align:right;">{{ quantity }}</td>
 										<td style="text-align:right;">${{ price }}</td>

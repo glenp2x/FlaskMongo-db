@@ -22,7 +22,7 @@ Search Page
 Login page
 Register page
 add product page
-add function products(list of categories) - Jamiu
+add products function(list of categories) - Jamiu
 confirm password (fix) - Jamiu
 my account will have form for user information - Vahida
 css of product page
