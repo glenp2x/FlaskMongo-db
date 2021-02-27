@@ -21,7 +21,7 @@
             <p>Feed your family the best, while spending less!</p>
             <div class ="banner-btn">
                 <a href ="#promo"><span></span>Products On Sale</a>
-                <a href ="#promo"><span></span>Shop Now</a>
+                <a href="{{ url_for('products') }}"><span></span>Shop Now</a>
             <br>
             <br>
             <h3>We Deliver Free Anywhere in Toronto with a minimum order worth CAD 15</h3>
@@ -43,7 +43,7 @@
         </nav>
     </div>
     <div id = "menuBtn">
-        <img src="images/menu.png" id="menu">
+        <img src="/static/images/menu.png" id="menu">
     </div>
 
 
@@ -57,7 +57,7 @@
 
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "images/pear.jpg">
+                        <img src = "/static/images/ProductImages/pear.jpg">
                         <div class = "user-info">
                             <br>
                             <h5>Normal Price: $2.99/lb</h5>
@@ -72,7 +72,7 @@
 
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "images/butter.jpg">
+                        <img src = "/static/images/ProductImages/butter.jpg">
                         <div class = "user-info">
                             <br>
                             <h5>Normal Price: $4.25/pc</h5>
@@ -90,7 +90,7 @@
 
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "images/mushroom.jpg">
+                        <img src = "/static/images/ProductImages/mushroom.jpg">
                         <div class = "user-info">
                             <br>
                             <h5>Normal Price: $3.00/lb</h5>
@@ -106,7 +106,7 @@
 
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "images/cupnoodles.jpg">
+                        <img src = "/static/images/ProductImages/cupnoodles.jpg">
                         <div class = "user-info">
                             <br>
                             <h5>Normal Price: $1.00/pc</h5>
@@ -123,7 +123,7 @@
 
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "images/breadandcake.jpg">
+                        <img src = "/static/images/ProductImages/breadandcake.jpg">
                         <div class = "user-info">
 
                             <br>
@@ -140,7 +140,7 @@
 
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "images/egg.JPG">
+                        <img src = "/static/images/ProductImages/egg.jpg">>
                         <div class = "user-info">
 
                             <br>
@@ -173,7 +173,7 @@
         <div class = "delivery-box">
 
             <div class ="single-delivery">
-                <img src ="images/deliveryfree.jpg">
+                <img src ="/static/images/deliveryfree.jpg">
                 <div class ="overlay"></div>
                 <div class="delivery-desc">
 
@@ -216,7 +216,7 @@
 
         </div>
         <div class ="features-img">
-            <img src = "images/store.jpg">
+            <img src = "/static/images/store.jpg">
         </div>
     </div>
 
@@ -227,35 +227,8 @@
 </section>
 
 <!-- footer -->
+{% include 'includes/footer.html' %}
 
-<section id="footer">
-        <div class = "title-text">
-        <p>CONTACT US</p>
-        <h1>We are here anytime</h1>
-        </div>
-
-<div class="footer-row">
-<div class ="footer-left">
-    <h1>Address <i class="fa fa-map-marker"></i></h1>
-    <p>123 Greenmeadow Avenue, Toronto Ontario, Canada</p>
-</div>
-
-
-
-<div class ="footer-right">
-    <h1>Customer Service Hotline <i class="fa fa-phone-square"></i></h1>
-    <p>1-800-123-3456 </p>
-</div>
-</div>
-
-<div class ="social-links">
-    <i class="fa fa-facebook"></i>
-    <i class="fa fa-instagram"></i>
-    <i class="fa fa-youtube-play"></i>
-    <p>@ Copyright 2020 All Rights Reserved</p>
-
-</div>
-</section>
     <script>
     var menuBtn = document.getElementById("menuBtn")
     var sideNav = document.getElementById("sideNav")
@@ -263,12 +236,12 @@
     menuBtn.onclick = function() {
         if(sideNav.style.right == "-250px"){
             sideNav.style.right = "0";
-            menu.src ="images/close.png";
+            menu.src ="/static/images/close.png";
 
         }
         else{
             sideNav.style.right = "-250px";
-            menu.src ="images/menu.png";
+            menu.src ="/static/images/menu.png";
         }
     }
 var scroll = new SmoothScroll('a[href*="#"]', {
