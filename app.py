@@ -5,6 +5,7 @@ import urllib
 from datetime import datetime
 from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm
 from flask_mongoengine import MongoEngine
+from werkzeug.utils import secure_filename
 import mongoengine as me
 
 import gc
@@ -52,10 +53,20 @@ def method_not_allowed(e):
 def internal_server_error(e):
     return render_template("500.html", error=e)
 
+def promo_price(price, discount):
+    discounted_price = price - (price * (discount/100))
+    new_price = price - discounted_price
+    return new_price
 
 @app.route('/')
 def index():
-    return render_template('index.html', title='Home')
+    try:
+        products_list = mongo.db.products
+        all_products = products_list.find({"discount": {"$gt": 0}})
+
+        return render_template('index.html', title='Home', products=all_products)
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/signup_customer/', methods=["GET", "POST"])
@@ -139,16 +150,71 @@ def products():
     except Exception as e:
         return str(e)
 
+@app.route('/personal_info/')
+def personal_info():
+    return render_template('personal_info.html', title='Personal Information')
+
+@app.route('/address_info/')
+def address_info():
+    return render_template('address_info.html', title='Address Information')
+
+@app.route('/payment_info/')
+def payment_info():
+    return render_template('payment_info.html', title='Payment Information')
+
+@app.route('/change_password/')
+def change_password():
+    return render_template('change_password.html', title='Change Password')
 
 @app.route('/my_account/')
 def my_account():
-    return render_template('my_account.html', title='Account')
+    pages = generate_page_list()
+    return render_template('my_account.html', title='Account', pages=pages)
+
+
+# commented by vahida on 01/03/2021.. will delete later if unused
+def generate_page_list():
+    server_id = 1
+    site_id = 1
+    pages = [
+        {"name": "Personal Info", "url": url_for(
+            "personal_info", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Address Info", "url": url_for(
+            "address_info", server_id=server_id, site_id=site_id)
+         },
+        {"name": "Payment Info", "url": url_for(
+            "payment_info", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Change Password", "url": url_for(
+            "change_password", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Order History", "url": url_for(
+            "payment_info", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Recommended For You", "url": url_for(
+            "payment_info", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Ratings by you", "url": url_for(
+            "payment_info", server_id=server_id,
+            site_id=site_id)
+         },
+    ]
+    return pages
 
 
 @app.route('/add_product/', methods=["GET", "POST"])
 def add_product():
     try:
         form = AddProductForm()
+
+        #  if form.validate_on_submit(): check form if valid on submit before proceeding
+
         if request.method == "POST":
             products_list = mongo.db.products
             product_name = form.product_name.data
@@ -157,14 +223,19 @@ def add_product():
             price = form.price.data
             size = form.size.data
             description = form.description.data
-            image = form.image.data
+            # get file data
+            file = form.image.data
+            if file:
+                filename = file.filename
+                form.image.data.save('static/images/ProductImages/' + barcode + '.jpg')
+                image = filename
 
-            products_list.insert(
+            products_list.insert_one(
                 {'product_name': product_name, 'barcode': barcode, 'brand': brand, 'price': price, 'size': size,
                  'description': description, 'image': image}
             )
             flash(product_name + " added!")
-            return redirect(url_for('index'))
+            return redirect(url_for('products'))
 
         return render_template('add_product.html', title='Add Product', form=form)
 

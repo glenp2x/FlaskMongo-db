@@ -11,11 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Poppins:wght@100&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
 
-
 </head>
 <body>
     <section id = "banner">
-
         <div class= "banner-text">
             <h1> Price Mart</h1>
             <p>Feed your family the best, while spending less!</p>
@@ -25,12 +23,9 @@
             <br>
             <br>
             <h3>We Deliver Free Anywhere in Toronto with a minimum order worth CAD 15</h3>
-
             </div>
-
         </div>
     </section>
-
     <div id ="sideNav">
         <nav>
         <ul>
@@ -46,7 +41,6 @@
         <img src="/static/images/menu.png" id="menu">
     </div>
 
-
     <section>
         <div id ="promo">
             <div class = "title-text">
@@ -54,113 +48,24 @@
                 <h1>PRODUCTS ON SALE</h1>
             </div>
             <div class ="promo-row">
-
+                {% for product in products %}
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "/static/images/ProductImages/pear.jpg">
+                        <img src = "/static/images/ProductImages/{{ product['image'] }}">
                         <div class = "user-info">
                             <br>
-                            <h5>Normal Price: $2.99/lb</h5>
+                            <h5>Normal Price: ${{ product['price'] }}</h5>
                             <br>
-                            <h3>Promo Price: $1.99/lb</h3>
+                            <h3>Promo Price: ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</h3>
                             <br>
                         </div>
                     </div>
-                    <h3> Green Anjou Pears</h3>
+                    <h3>{{product['product_name']}}, {{product['size']}}</h3>
                     <h6> Click on the item to add to cart!</h6>
                 </div>
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/butter.jpg">
-                        <div class = "user-info">
-                            <br>
-                            <h5>Normal Price: $4.25/pc</h5>
-                            <br>
-                            <h3>Promo Price: $2.99/pc </h3>
-                            <br>
-
-                        </div>
-                    </div>
-                    <h3>Kerrygold Pure Irish Butter - 227g </h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/mushroom.jpg">
-                        <div class = "user-info">
-                            <br>
-                            <h5>Normal Price: $3.00/lb</h5>
-                            <br>
-                            <h3>Promo Price: $2.00/lb</h3>
-                            <br>
-                        </div>
-                    </div>
-                    <h3>Cremini Mushrooms</h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/cupnoodles.jpg">
-                        <div class = "user-info">
-                            <br>
-                            <h5>Normal Price: $1.00/pc</h5>
-                            <br>
-                            <h3>Promo Price: $0.50/pc</h3>
-                            <br>
-
-                        </div>
-                    </div>
-                    <h3>Nissin Cup Noodles - 75g</h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/breadandcake.jpg">
-                        <div class = "user-info">
-
-                            <br>
-                            <h5>Normal Price: $2.50/pc</h5>
-                            <br>
-                            <h3>Promo Price: $1.50/pc</h3>
-                            <br>
-                        </div>
-                    </div>
-                    <h3>Whole Wheat Bread - 680g</h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/egg.jpg">>
-                        <div class = "user-info">
-
-                            <br>
-                            <h5>Normal Price: $6.00/dozen</h5>
-                            <br>
-                            <h3>Promo Price: $4.11/dozen</h3>
-                            <br>
-
-                        </div>
-                    </div>
-                    <h3>Organic Brown Eggs</h3>
-                    <h6> Click on the item to add to cart!</h6>
-
-                </div>
-
+                {% endfor %}
             </div>
-
         </div>
-
-
 
 <section>
     <section id ="delivery">
@@ -171,23 +76,18 @@
             <h4>(Minimum order: CAD 15)</h4>
         </div>
         <div class = "delivery-box">
-
             <div class ="single-delivery">
                 <img src ="/static/images/deliveryfree.jpg">
                 <div class ="overlay"></div>
                 <div class="delivery-desc">
-
                 </div>
 
-
 </section>
-
  <section id ="feature">
     <div class = "title-text">
         <p>ABOUT THE COMPANY</p>
         <h1>Price Mart </h1>
     </div>
-
     <div class = "feature-box">
         <div class ="features">
             <h1>OUR COMPANY</h1>
@@ -207,28 +107,21 @@
                 <div class ="feature-text">
                     <p> GFHFGHGFHGH....dererg fgh fghg hgfhfg hghgr rt gfgfdgdfgfdg
                         fgdfgfgdf </p>
-
                     <p> gdfgdfgfd
                         rt rv vbvbc vbcvbxceef dfddfgdsfgde.rerere.rere</p>
                 </div>
             </div>
-
 
         </div>
         <div class ="features-img">
             <img src = "/static/images/store.jpg">
         </div>
     </div>
-
 </section>
 
-
-
 </section>
-
 <!-- footer -->
 {% include 'includes/footer.html' %}
-
     <script>
     var menuBtn = document.getElementById("menuBtn")
     var sideNav = document.getElementById("sideNav")
@@ -237,7 +130,6 @@
         if(sideNav.style.right == "-250px"){
             sideNav.style.right = "0";
             menu.src ="/static/images/close.png";
-
         }
         else{
             sideNav.style.right = "-250px";
@@ -249,8 +141,5 @@ speed: 1000,
 speedAsDuration: true
 });
 </script>
-
 </body>
 </html>
-
-
