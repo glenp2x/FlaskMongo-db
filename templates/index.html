@@ -55,106 +55,22 @@
             </div>
             <div class ="promo-row">
 
+                {% for product in products %}
                 <div class = "promo-col">
                     <div class ="user">
-                        <img src = "/static/images/ProductImages/pear.jpg">
+                        <img src = "/static/images/ProductImages/{{ product['image'] }}">
                         <div class = "user-info">
                             <br>
-                            <h5>Normal Price: $2.99/lb</h5>
+                            <h5>Normal Price: ${{ product['price'] }}</h5>
                             <br>
-                            <h3>Promo Price: $1.99/lb</h3>
+                            <h3>Promo Price: ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</h3>
                             <br>
                         </div>
                     </div>
-                    <h3> Green Anjou Pears</h3>
+                    <h3>{{product['product_name']}}, {{product['size']}}</h3>
                     <h6> Click on the item to add to cart!</h6>
                 </div>
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/butter.jpg">
-                        <div class = "user-info">
-                            <br>
-                            <h5>Normal Price: $4.25/pc</h5>
-                            <br>
-                            <h3>Promo Price: $2.99/pc </h3>
-                            <br>
-
-                        </div>
-                    </div>
-                    <h3>Kerrygold Pure Irish Butter - 227g </h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/mushroom.jpg">
-                        <div class = "user-info">
-                            <br>
-                            <h5>Normal Price: $3.00/lb</h5>
-                            <br>
-                            <h3>Promo Price: $2.00/lb</h3>
-                            <br>
-                        </div>
-                    </div>
-                    <h3>Cremini Mushrooms</h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/cupnoodles.jpg">
-                        <div class = "user-info">
-                            <br>
-                            <h5>Normal Price: $1.00/pc</h5>
-                            <br>
-                            <h3>Promo Price: $0.50/pc</h3>
-                            <br>
-
-                        </div>
-                    </div>
-                    <h3>Nissin Cup Noodles - 75g</h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/breadandcake.jpg">
-                        <div class = "user-info">
-
-                            <br>
-                            <h5>Normal Price: $2.50/pc</h5>
-                            <br>
-                            <h3>Promo Price: $1.50/pc</h3>
-                            <br>
-                        </div>
-                    </div>
-                    <h3>Whole Wheat Bread - 680g</h3>
-                    <h6> Click on the item to add to cart!</h6>
-                </div>
-
-
-                <div class = "promo-col">
-                    <div class ="user">
-                        <img src = "/static/images/ProductImages/egg.jpg">>
-                        <div class = "user-info">
-
-                            <br>
-                            <h5>Normal Price: $6.00/dozen</h5>
-                            <br>
-                            <h3>Promo Price: $4.11/dozen</h3>
-                            <br>
-
-                        </div>
-                    </div>
-                    <h3>Organic Brown Eggs</h3>
-                    <h6> Click on the item to add to cart!</h6>
-
-                </div>
+                {% endfor %}
 
             </div>
 

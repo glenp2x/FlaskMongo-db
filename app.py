@@ -55,7 +55,13 @@ def internal_server_error(e):
 
 @app.route('/')
 def index():
-    return render_template('index.html', title='Home')
+    try:
+        products_list = mongo.db.products
+        all_products = products_list.find({"discount": {"$gt": 0}})
+
+        return render_template('index.html', title='Home', products=all_products)
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/signup_customer/', methods=["GET", "POST"])
