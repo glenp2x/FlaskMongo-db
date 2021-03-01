@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, TextAreaField
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms import validators
 
@@ -26,5 +27,5 @@ class AddProductForm(FlaskForm):
     size = StringField('Size')
     price = FloatField('Price')
     description = TextAreaField('Description')
-    image = TextAreaField('Image')
+    image = FileField() #validators=[FileAllowed(image, 'Image only!'), FileRequired('File was empty!')]) #TextAreaField('Image')
     submit = SubmitField('Add')

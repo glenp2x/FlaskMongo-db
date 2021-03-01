@@ -5,6 +5,7 @@ import urllib
 from datetime import datetime
 from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm
 from flask_mongoengine import MongoEngine
+from werkzeug.utils import secure_filename
 import mongoengine as me
 
 import gc
@@ -145,10 +146,46 @@ def my_account():
     return render_template('my_account.html', title='Account')
 
 
+def generate_page_list(server_id, site_id):
+    pages = [
+        {"name": "Personal Info", "url": url_for(
+            "templates/personal_info.html", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Address Info", "url": url_for(
+            "templates/address_info.html", server_id=server_id, site_id=site_id)
+         },
+        {"name": "Payment Info", "url": url_for(
+            "templates/payment_info.html", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Change Password", "url": url_for(
+            "templates/change_password.html", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Order History", "url": url_for(
+            "templates/payment_info.html", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Recommended For You", "url": url_for(
+            "templates/payment_info.html", server_id=server_id,
+            site_id=site_id)
+         },
+        {"name": "Ratings by you", "url": url_for(
+            "templates/payment_info.html", server_id=server_id,
+            site_id=site_id)
+         },
+    ]
+    return pages
+
+
 @app.route('/add_product/', methods=["GET", "POST"])
 def add_product():
     try:
         form = AddProductForm()
+
+        #  if form.validate_on_submit(): check form if valid on submit before proceeding
+
         if request.method == "POST":
             products_list = mongo.db.products
             product_name = form.product_name.data
@@ -157,9 +194,14 @@ def add_product():
             price = form.price.data
             size = form.size.data
             description = form.description.data
-            image = form.image.data
+            # get file data
+            file = form.image.data
+            if file:
+                filename = file.filename
+                form.image.data.save('static/images/ProductImages/' + filename)
+                image = filename
 
-            products_list.insert(
+            products_list.insert_one(
                 {'product_name': product_name, 'barcode': barcode, 'brand': brand, 'price': price, 'size': size,
                  'description': description, 'image': image}
             )
