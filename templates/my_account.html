@@ -1,16 +1,25 @@
 {% extends 'header.html' %}
+{% import "my_account_sidebar.html" as macros %}
 
 {% block content %}
 <div class ="container topgap">
-    <h2>My Account</h2>
+    <div class="col-md-4">
+      {{macros.build_site_navigation(pages=pages, selected="Page Name")}}
+    </div>
+    <div class="col-md-8">
+      <p>this is sidebar</p>
+      <h2>My Account</h2>
     <ul>
         <li>Update personal information</li>
         <li>View order history</li>
         <li>View Wishlist, maybe?</li>
+        <li>Change Password</li>
         <li>Products you've rated, maybe?</li>
         <li>Products recommended for you, maybe?</li>
         <li>Add and update payment info</li>
         <li>Add and update address info</li>
     </ul>
-    {% endblock %}
+    </div>
 </div>
+{% endblock %}
+
