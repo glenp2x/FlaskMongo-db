@@ -1,3 +1,4 @@
+
 from flask import Flask, flash, render_template, redirect, url_for, session, request
 from flask_pymongo import PyMongo
 import bcrypt
@@ -223,6 +224,7 @@ def add_product():
             price = form.price.data
             size = form.size.data
             description = form.description.data
+            discount = form.discount.data
             # get file data
             file = form.image.data
             if file:
@@ -232,7 +234,7 @@ def add_product():
 
             products_list.insert_one(
                 {'product_name': product_name, 'barcode': barcode, 'brand': brand, 'price': price, 'size': size,
-                 'description': description, 'image': image}
+                 'description': description, 'discount': discount, 'image': image}
             )
             flash(product_name + " added!")
             return redirect(url_for('products'))
@@ -249,26 +251,33 @@ def add_product_to_cart():
         products_list = mongo.db.products
         quantity = int(request.form['quantity'])
         barcode = request.form['barcode']
+
+
         # validate the received values
         if quantity and barcode and request.method == 'POST':
             row = products_list.find_one({'barcode': barcode})
 
+            unit_price = float('{:,.2f}'.format(row['price'] - row['price'] * row['discount'] / 100))
+
             itemArray = {
+
                 row['barcode']: {'product_name': row['product_name'], 'barcode': row['barcode'], 'quantity': quantity,
-                                 'price': row['price'], 'image': row['image'], 'total_price': quantity * row['price']}}
+                                 'price': unit_price, 'image': row['image'], 'total_price': quantity * unit_price}}
 
             all_total_price = 0
             all_total_quantity = 0
 
+
             session.modified = True
             if 'cart_item' in session:
+
                 if row['barcode'] in session['cart_item']:
                     for key, value in session['cart_item'].items():
                         if row['barcode'] == key:
                             old_quantity = session['cart_item'][key]['quantity']
                             total_quantity = old_quantity + quantity
                             session['cart_item'][key]['quantity'] = total_quantity
-                            session['cart_item'][key]['total_price'] = total_quantity * row['price']
+                            session['cart_item'][key]['total_price'] = total_quantity * unit_price
                 else:
                     session['cart_item'] = array_merge(session['cart_item'], itemArray)
 
@@ -280,7 +289,7 @@ def add_product_to_cart():
             else:
                 session['cart_item'] = itemArray
                 all_total_quantity = all_total_quantity + quantity
-                all_total_price = all_total_price + quantity * row['price']
+                all_total_price = all_total_price + quantity * unit_price
 
             session['all_total_quantity'] = all_total_quantity
             session['all_total_price'] = '{:,.2f}'.format(all_total_price)
@@ -345,3 +354,5 @@ def array_merge(first_array, second_array):
 if __name__ == "__main__":
     app.secret_key = 'mysecret'
     app.run()
+
+
