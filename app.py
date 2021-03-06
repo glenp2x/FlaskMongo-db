@@ -151,21 +151,26 @@ def products():
     except Exception as e:
         return str(e)
 
+
 @app.route('/personal_info/')
 def personal_info():
     return render_template('personal_info.html', title='Personal Information')
+
 
 @app.route('/address_info/')
 def address_info():
     return render_template('address_info.html', title='Address Information')
 
+
 @app.route('/payment_info/')
 def payment_info():
     return render_template('payment_info.html', title='Payment Information')
 
+
 @app.route('/change_password/')
 def change_password():
     return render_template('change_password.html', title='Change Password')
+
 
 @app.route('/my_account/')
 def my_account():
@@ -353,6 +358,7 @@ def array_merge(first_array, second_array):
 
 if __name__ == "__main__":
     app.secret_key = 'mysecret'
+    app.config["DEBUG"] = True
     app.run()
 
 
