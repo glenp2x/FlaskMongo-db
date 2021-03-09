@@ -463,3 +463,7 @@ a.article-title:hover {
 		transform: translateY(-5px);
 		box-shadow: none;
 	}
+
+sidebar_li{
+    padding:1em;
+}
