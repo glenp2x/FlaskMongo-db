@@ -2,12 +2,37 @@
 {% import "my_account_sidebar.html" as macros %}
 
 {% block content %}
-<div class ="container topgap">
+<div class="row topgap">
     <div class="col-md-4">
       {{macros.build_site_navigation(pages=pages, selected="Page Name")}}
     </div>
     <div class="col-md-8">
-      <p>this is sidebar</p>
+      <div id="my_account_data">this is sidebar</div>
     </div>
 </div>
+<script type="text/javascript">
+
+    function RenderRequestedPage(url){
+     debugger;
+     $.ajax({
+     url: url,
+     type: "GET",
+     dataType: "html",
+     //data: {'option_id':option_id},
+     success: function(data){
+       debugger;
+       $('#my_account_data').html(data)
+      /* HERE I WANT TO ITERATE THROUGH THE data LIST OF OBJECTS */
+     },
+     error: function(xhr){
+     debugger;
+     alert('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText);
+     $('#my_account_data').html(xhr.responseText)
+     }
+
+   });
+}
+</script>
+
 {% endblock %}
+
