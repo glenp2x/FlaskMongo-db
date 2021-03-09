@@ -13,19 +13,16 @@
 <script type="text/javascript">
 
     function RenderRequestedPage(url){
-     debugger;
      $.ajax({
      url: url,
      type: "GET",
      dataType: "html",
      //data: {'option_id':option_id},
      success: function(data){
-       debugger;
        $('#my_account_data').html(data)
       /* HERE I WANT TO ITERATE THROUGH THE data LIST OF OBJECTS */
      },
      error: function(xhr){
-     debugger;
      alert('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText);
      $('#my_account_data').html(xhr.responseText)
      }
