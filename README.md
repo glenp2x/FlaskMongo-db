@@ -43,3 +43,18 @@ resolve css conflicts in footer and merge css files?
 
 Extras
 
+
+
+
+copied from my account
+<h2>My Account</h2>
+    <ul>
+        <li>Update personal information</li>
+        <li>View order history</li>
+        <li>View Wishlist, maybe?</li>
+        <li>Change Password</li>
+        <li>Products you've rated, maybe?</li>
+        <li>Products recommended for you, maybe?</li>
+        <li>Add and update payment info</li>
+        <li>Add and update address info</li>
+    </ul>
