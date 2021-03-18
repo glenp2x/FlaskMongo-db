@@ -273,4 +273,5 @@ def array_merge(first_array, second_array):
 
 if __name__ == "__main__":
     app.secret_key = 'mysecret'
+    app.config["DEBUG"] = True
     app.run()
