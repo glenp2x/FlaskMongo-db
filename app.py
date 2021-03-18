@@ -1,10 +1,12 @@
+
 from flask import Flask, flash, render_template, redirect, url_for, session, request
 from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm
 from flask_mongoengine import MongoEngine
+from werkzeug.utils import secure_filename
 import mongoengine as me
 
 import gc
@@ -52,10 +54,20 @@ def method_not_allowed(e):
 def internal_server_error(e):
     return render_template("500.html", error=e)
 
+def promo_price(price, discount):
+    discounted_price = price - (price * (discount/100))
+    new_price = price - discounted_price
+    return new_price
 
 @app.route('/')
 def index():
-    return render_template('index.html', title='Home')
+    try:
+        products_list = mongo.db.products
+        all_products = products_list.find({"discount": {"$gt": 0}})
+
+        return render_template('index.html', title='Home', products=all_products)
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/signup_customer/', methods=["GET", "POST"])
@@ -139,16 +151,74 @@ def products():
     except Exception as e:
         return str(e)
 
+@app.route('/personal_info/')
+def personal_info():
+    return render_template('personal_info.html', title='Personal Information')
+
+@app.route('/address_info/')
+def address_info():
+    return render_template('address_info.html', title='Address Information')
+
+@app.route('/payment_info/')
+def payment_info():
+    return render_template('payment_info.html', title='Payment Information')
+
+
+@app.route('/change_password/', methods= ["GET","POST"])
+def change_password():
+    try:
+        form = ChangePasswordForm()
+        if request.method == "POST":
+            if form.validate_on_submit():
+                print("Form Valid")
+            flash("Password Changed")
+
+        return render_template('change_password.html', title='Change Password', form=form)
+    except Exception as e:
+        return str(e)
+
 
 @app.route('/my_account/')
 def my_account():
-    return render_template('my_account.html', title='Account')
+    pages = generate_page_list()
+    return render_template('my_account.html', title='Account', pages=pages)
+
+
+# commented by vahida on 01/03/2021.. will delete later if unused
+def generate_page_list():
+    pages = [
+        {"name": "Personal Info", "url": url_for(
+            "personal_info")
+         },
+        {"name": "Address Info", "url": url_for(
+            "address_info")
+         },
+        {"name": "Payment Info", "url": url_for(
+            "payment_info")
+         },
+        {"name": "Change Password", "url": url_for(
+            "change_password")
+         },
+        {"name": "Order History", "url": url_for(
+            "payment_info")
+         },
+        {"name": "Recommended For You", "url": url_for(
+            "payment_info")
+         },
+        {"name": "Ratings by you", "url": url_for(
+            "payment_info")
+         },
+    ]
+    return pages
 
 
 @app.route('/add_product/', methods=["GET", "POST"])
 def add_product():
     try:
         form = AddProductForm()
+
+        #  if form.validate_on_submit(): check form if valid on submit before proceeding
+
         if request.method == "POST":
             products_list = mongo.db.products
             product_name = form.product_name.data
@@ -157,14 +227,20 @@ def add_product():
             price = form.price.data
             size = form.size.data
             description = form.description.data
-            image = form.image.data
+            discount = form.discount.data
+            # get file data
+            file = form.image.data
+            if file:
+                filename = file.filename
+                form.image.data.save('static/images/ProductImages/' + barcode + '.jpg')
+                image = filename
 
-            products_list.insert(
+            products_list.insert_one(
                 {'product_name': product_name, 'barcode': barcode, 'brand': brand, 'price': price, 'size': size,
-                 'description': description, 'image': image}
+                 'description': description, 'discount': discount, 'image': image}
             )
             flash(product_name + " added!")
-            return redirect(url_for('index'))
+            return redirect(url_for('products'))
 
         return render_template('add_product.html', title='Add Product', form=form)
 
@@ -178,26 +254,33 @@ def add_product_to_cart():
         products_list = mongo.db.products
         quantity = int(request.form['quantity'])
         barcode = request.form['barcode']
+
+
         # validate the received values
         if quantity and barcode and request.method == 'POST':
             row = products_list.find_one({'barcode': barcode})
 
+            unit_price = float('{:,.2f}'.format(row['price'] - row['price'] * row['discount'] / 100))
+
             itemArray = {
+
                 row['barcode']: {'product_name': row['product_name'], 'barcode': row['barcode'], 'quantity': quantity,
-                                 'price': row['price'], 'image': row['image'], 'total_price': quantity * row['price']}}
+                                 'price': unit_price, 'image': row['image'], 'total_price': quantity * unit_price}}
 
             all_total_price = 0
             all_total_quantity = 0
 
+
             session.modified = True
             if 'cart_item' in session:
+
                 if row['barcode'] in session['cart_item']:
                     for key, value in session['cart_item'].items():
                         if row['barcode'] == key:
                             old_quantity = session['cart_item'][key]['quantity']
                             total_quantity = old_quantity + quantity
                             session['cart_item'][key]['quantity'] = total_quantity
-                            session['cart_item'][key]['total_price'] = total_quantity * row['price']
+                            session['cart_item'][key]['total_price'] = total_quantity * unit_price
                 else:
                     session['cart_item'] = array_merge(session['cart_item'], itemArray)
 
@@ -209,7 +292,7 @@ def add_product_to_cart():
             else:
                 session['cart_item'] = itemArray
                 all_total_quantity = all_total_quantity + quantity
-                all_total_price = all_total_price + quantity * row['price']
+                all_total_price = all_total_price + quantity * unit_price
 
             session['all_total_quantity'] = all_total_quantity
             session['all_total_price'] = '{:,.2f}'.format(all_total_price)
@@ -275,3 +358,5 @@ if __name__ == "__main__":
     app.secret_key = 'mysecret'
     app.config["DEBUG"] = True
     app.run()
+
+

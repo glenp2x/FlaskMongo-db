@@ -75,9 +75,7 @@
 					<a href="javascript:void(0)" class="closebtn" onclick="close_right_sidenav()">&times;</a>
 					<div class="side_cart">
 						<div id="shopping-cart">
-
 							<h4> <i class="fas fa-shopping-cart"></i> Shopping Cart</h4>
-
 							<small>
 							{% if 'cart_item' in session %}
 							<a id="btnEmpty" href="{{ url_for('empty_cart') }}">Empty Cart</a>
@@ -127,12 +125,7 @@
 
 					</div>
 
-				<a style="cursor:pointer" class="cart nav-item nav-link" onclick="open_right_sidenav()"><i class="fas fa-shopping-cart" ></i><span class="cart-basket d-flex align-items-center justify-content-center">{% if session['all_total_quantity']%}
-{{session['all_total_quantity']}}
-{% else %}
-{{0}}
-{% endif %}</span>Cart</a>
-
+				<a style="cursor:pointer" class="nav-item nav-link" onclick="open_right_sidenav()"><i class="fas fa-shopping-cart" ></i> Cart</a>
 
 				</div>
 
