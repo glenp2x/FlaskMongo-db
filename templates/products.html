@@ -15,12 +15,16 @@
 							</a>
 						</div>
 						<div class="product-tile-footer">
+
+
 							<p class="nametile">{{product['product_name']}}, {{product['size']}}</p>
 							<div class="rating">
 								<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
 							</div>
 							<hr>
-							<p class="pricetile">${{ product['price'] }}</p>
+
+							<p class="nametile"> ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</p>
+
 							<div>
 								<input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
 								<input type="hidden" name="price" value="{{ product['price'] }}"/>
