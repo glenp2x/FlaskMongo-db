@@ -1,10 +1,10 @@
 {% extends 'header.html' %}
-{% import "my_account_sidebar.html" as macros %}
+{% import "includes/my_account_sidebar.html" as macros %}
 
 {% block content %}
 <div class="row topgap">
     <div class="col-md-4">
-      {{macros.build_site_navigation(pages=pages, selected="Page Name")}}
+      {{macros.build_site_navigation_my_account(pages=pages, selected="Page Name")}}
     </div>
     <div class="col-md-8">
       <div id="my_account_data">this is sidebar</div>
