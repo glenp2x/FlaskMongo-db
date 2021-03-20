@@ -187,8 +187,11 @@ def my_account():
     pages = generate_page_list()
     return render_template('my_account.html', title='Account', pages=pages)
 
+@app.route('/admin_panel/')
+def admin_panel():
+    pages = generate_admin_page_list()
+    return render_template('admin_panel.html', title='Admin Panel', pages=pages)
 
-# commented by vahida on 01/03/2021.. will delete later if unused
 def generate_page_list():
     pages = [
         {"name": "Personal Info", "url": url_for(
@@ -212,6 +215,18 @@ def generate_page_list():
         {"name": "Ratings by you", "url": url_for(
             "payment_info")
          },
+    ]
+    return pages
+
+def generate_admin_page_list():
+    pages = [
+        {"name": "Manage users", "url": url_for(
+            "personal_info")
+         },
+        {"name": "Manage Products", "url": url_for(
+            "address_info")
+         },
+
     ]
     return pages
 
