@@ -4,7 +4,7 @@ from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -167,9 +167,19 @@ def payment_info():
     return render_template('payment_info.html', title='Payment Information')
 
 
-@app.route('/change_password/')
+@app.route('/change_password/', methods= ["GET","POST"])
 def change_password():
-    return render_template('change_password.html', title='Change Password')
+    try:
+        form = ChangePasswordForm()
+        if request.method == "POST":
+            if form.validate_on_submit():
+                print("Form Valid")
+            flash("Password Changed")
+
+        return render_template('change_password.html', title='Change Password', form=form)
+    except Exception as e:
+        return str(e)
+
 
 
 @app.route('/my_account/')
@@ -180,35 +190,27 @@ def my_account():
 
 # commented by vahida on 01/03/2021.. will delete later if unused
 def generate_page_list():
-    server_id = 1
-    site_id = 1
     pages = [
         {"name": "Personal Info", "url": url_for(
-            "personal_info", server_id=server_id,
-            site_id=site_id)
+            "personal_info")
          },
         {"name": "Address Info", "url": url_for(
-            "address_info", server_id=server_id, site_id=site_id)
+            "address_info")
          },
         {"name": "Payment Info", "url": url_for(
-            "payment_info", server_id=server_id,
-            site_id=site_id)
+            "payment_info")
          },
         {"name": "Change Password", "url": url_for(
-            "change_password", server_id=server_id,
-            site_id=site_id)
+            "change_password")
          },
         {"name": "Order History", "url": url_for(
-            "payment_info", server_id=server_id,
-            site_id=site_id)
+            "payment_info")
          },
         {"name": "Recommended For You", "url": url_for(
-            "payment_info", server_id=server_id,
-            site_id=site_id)
+            "payment_info")
          },
         {"name": "Ratings by you", "url": url_for(
-            "payment_info", server_id=server_id,
-            site_id=site_id)
+            "payment_info")
          },
     ]
     return pages

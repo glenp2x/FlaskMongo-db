@@ -30,3 +30,17 @@ class AddProductForm(FlaskForm):
     description = TextAreaField('Description')
     image = FileField() #validators=[FileAllowed(image, 'Image only!'), FileRequired('File was empty!')]) #TextAreaField('Image')
     submit = SubmitField('Add')
+
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField('Old Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators = [
+        DataRequired(),
+        Length(min=4, max=6)
+        # validators.EqualTo('confirm_new_password', message='Passwords must match')
+    ])
+    confirm_new_password = PasswordField(
+        label=('Confirm Password'),
+        validators=[DataRequired(message='*Required'),
+        EqualTo('new_password', message='Both password fields must be equal!')])
+    submit = SubmitField("Change Password")
