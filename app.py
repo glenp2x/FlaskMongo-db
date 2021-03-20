@@ -151,13 +151,16 @@ def products():
     except Exception as e:
         return str(e)
 
+
 @app.route('/personal_info/')
 def personal_info():
     return render_template('personal_info.html', title='Personal Information')
 
+
 @app.route('/address_info/')
 def address_info():
     return render_template('address_info.html', title='Address Information')
+
 
 @app.route('/payment_info/')
 def payment_info():
@@ -176,6 +179,7 @@ def change_password():
         return render_template('change_password.html', title='Change Password', form=form)
     except Exception as e:
         return str(e)
+
 
 
 @app.route('/my_account/')

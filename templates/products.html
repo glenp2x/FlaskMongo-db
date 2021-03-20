@@ -23,7 +23,15 @@
 							</div>
 							<hr>
 
-							<p class="nametile"> ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</p>
+							<p class="nametile">
+								{% if product['discount'] %}
+								<s>${{product['price']}}</s>
+									<br>
+								<span style = "color: red;">Now ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</span>
+								{% else %}
+									${{product['price']}}
+								{% endif %}
+							</p>
 
 							<div>
 								<input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
