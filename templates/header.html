@@ -125,7 +125,14 @@
 
 					</div>
 
-				<a style="cursor:pointer" class="nav-item nav-link" onclick="open_right_sidenav()"><i class="fas fa-shopping-cart" ></i> Cart</a>
+				<a style="cursor:pointer" class="cart nav-item nav-link" onclick="open_right_sidenav()"><i class="fas fa fa-shopping-cart fa-lg"></i>
+          <span class="cart-basket d-flex align-items-center justify-content-center">
+            {% if session['all_total_quantity']%}
+			{{session['all_total_quantity']}}
+			{% else %}
+			{{0}}
+			{% endif %}
+          </span></i> Cart</a>
 
 				</div>
 
