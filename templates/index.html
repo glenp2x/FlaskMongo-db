@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<section lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Mart</title>
-    <link href="{{ url_for('static', filename='css/homestyle.css') }}" rel="stylesheet" type="text/css" />
-    <link rel ="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <meta name = "viewport" content="width = device=width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Poppins:wght@100&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+{% extends 'header.html' %}
 
-</head>
-<body>
+{% block content %}
     <section id = "banner">
         <div class= "banner-text">
+            <form method="POST" action="/add">
             <h1> Price Mart</h1>
             <p>Feed your family the best, while spending less!</p>
             <div class ="banner-btn">
@@ -24,9 +13,10 @@
             <br>
             <h3>We Deliver Free Anywhere in Toronto with a minimum order worth CAD 15</h3>
             </div>
+            </form>
         </div>
     </section>
-    <div id ="sideNav">
+    <div id ="sideNav" class = "topgap">
         <nav>
         <ul>
             <li><a href="#banner">HOME</a></li>
@@ -37,7 +27,7 @@
         </ul>
         </nav>
     </div>
-    <div id = "menuBtn">
+    <div id = "menuBtn" class = "topgap">
         <img src="/static/images/menu.png" id="menu">
     </div>
 
@@ -49,10 +39,16 @@
             </div>
             <div class ="promo-row">
                 {% for product in products %}
+
                 <div class = "promo-col">
+                    <form method="POST" action="/add">
                     <div class ="user">
                         <img src = "/static/images/ProductImages/{{ product['image'] }}">
                         <div class = "user-info">
+                            <input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
+                        <input type="hidden" name="price" value="{{ product['price'] }}"/>
+                            <input type="number" name="quantity" value="1" min="1" max="{{ product['qty_in_stk'] }}"/>
+                           <input type="submit" value="Add" class=" btn btn-info" />
                             <br>
                             <h5>Normal Price: ${{ product['price'] }}</h5>
                             <br>
@@ -61,7 +57,7 @@
                         </div>
                     </div>
                     <h3>{{product['product_name']}}, {{product['size']}}</h3>
-                    <h6> Click on the item to add to cart!</h6>
+                    </form>
                 </div>
                 {% endfor %}
             </div>
@@ -120,8 +116,8 @@
 </section>
 
 </section>
-<!-- footer -->
-{% include 'includes/footer.html' %}
+
+
     <script>
     var menuBtn = document.getElementById("menuBtn")
     var sideNav = document.getElementById("sideNav")
@@ -142,5 +138,5 @@ speedAsDuration: true
 });
 </script>
     </section>
-</body>
-</html>
+{% endblock content %}
+
