@@ -60,6 +60,10 @@
 								<a class="dropdown-item" href="{{ url_for('signup_customer') }}"><i class="fas fa-user-plus"></i> Sign up</a>
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="{{ url_for('my_account') }}"><i class="fas fa-user-circle"></i> My account</a>
+								{% if True %} <!--session.has_role('admin')-->
+									<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="{{ url_for('admin_panel') }}"><i class="fas fa-user-circle"></i> Admin Panel</a>
+								{% endif %}
 							</div>
 						</div>
 					{% endif %}
