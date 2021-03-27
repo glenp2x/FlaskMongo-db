@@ -1,0 +1,11 @@
+{% macro build_site_navigation_my_account(pages, selected) %}
+<div class="w-1/4 mr-8">
+    <ul>
+        {% for page in pages %}
+<!--        <a href="{{page.url}}">-->
+            <li class="sidebar_li" onclick="RenderRequestedPage('{{ page.url }}')"><span class=""></span>{{page.name}}</li>
+<!--        </a>-->
+        {% endfor %}
+    </ul>
+</div>
+{% endmacro %}

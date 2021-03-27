@@ -1,7 +1,7 @@
-{% macro build_site_navigation(pages, selected) %}
+{% macro build_site_navigation_admin_panel(admin_pages, selected) %}
 <div class="w-1/4 mr-8">
     <ul>
-        {% for page in pages %}
+        {% for page in admin_pages %}
 <!--        <a href="{{page.url}}">-->
             <li class="sidebar_li" onclick="RenderRequestedPage('{{ page.url }}')"><span class=""></span>{{page.name}}</li>
 <!--        </a>-->

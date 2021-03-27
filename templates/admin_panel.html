@@ -1,0 +1,15 @@
+{% extends 'header.html' %}
+{% import "includes/admin_panel_sidebar.html" as macros %}
+
+{% block content %}
+<div class="row topgap">
+    <div class="col-md-4">
+      {{macros.build_site_navigation_admin_panel(admin_pages=pages, selected="Page Name")}}
+    </div>
+    <div class="col-md-8">
+      <div id="my_account_data">this is sidebar</div>
+    </div>
+</div>
+
+
+{% endblock %}
