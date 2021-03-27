@@ -306,7 +306,7 @@ def add_product_to_cart():
                 all_total_price = all_total_price + quantity * unit_price
 
             session['all_total_quantity'] = all_total_quantity
-            session['all_total_price'] = '{:,.2f}'.format(all_total_price)
+            session['all_total_price'] = all_total_price
 
             flash("Product added to cart")
             return redirect(request.referrer)
