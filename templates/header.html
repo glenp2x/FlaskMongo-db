@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% if title %}
-	 	<title>PriceMart - {{ title }}</title>
-	{% else %}
-		<title>PriceMart</title>
-	{% endif %}
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link href="{{ url_for('static', filename='css/mainstyle.css') }}" rel="stylesheet" type="text/css" />
-	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	{% block head %}
+		{% if title %}
+			<title>PriceMart - {{ title }}</title>
+		{% else %}
+			<title>PriceMart</title>
+		{% endif %}
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link href="{{ url_for('static', filename='css/mainstyle.css') }}" rel="stylesheet" type="text/css" />
+		<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 	<link href="{{ url_for('static', filename='css/homestyle.css') }}" rel="stylesheet" type="text/css" />
     <link rel ="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -19,6 +20,7 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Poppins:wght@100&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+	{% endblock %}
 </head>
 <body>
 	<header class="site-header">
@@ -115,7 +117,7 @@
 									<tr>
 										<td colspan="2" align="right"><strong>Total:</strong></td>
 										<td align="right"><strong>{{ session['all_total_quantity'] }}</strong></td>
-										<td align="right" colspan="2"><strong>$ {{ session['all_total_price'] }}</strong></td>
+										<td align="right" colspan="2"><strong>$ {{ '{:,.2f}'.format(session['all_total_price']) }}</strong></td>
 										<td></td>
 									</tr>
 								</tbody>
@@ -159,9 +161,6 @@
 			</div>
 		</div>
 	</main>
-	<footer>
-		<!-- add footer here -->
-	</footer>
 
 	<!-- Required Js -->
 	{% include 'includes/scripts.html' %}
