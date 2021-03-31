@@ -23,22 +23,6 @@ app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote("Password@
 
 mongo = PyMongo(app)
 
-# still working on this
-"""
-@app.route('/add/<string:username>/<string:email>/<string:password>/<string:first_name>', methods=['GET'])
-def add(username, email, password, first_name):
-    customer = mongo.db.customers
-    customer.insert(
-        {
-            'username': username,
-            'email': email,
-            'password': password,
-            'first_name': first_name
-        }
-    )
-    return redirect(url_for('products'))
-"""
-
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -54,10 +38,12 @@ def method_not_allowed(e):
 def internal_server_error(e):
     return render_template("500.html", error=e)
 
+
 def promo_price(price, discount):
     discounted_price = price - (price * (discount/100))
     new_price = price - discounted_price
     return new_price
+
 
 @app.route('/')
 def index():
@@ -147,9 +133,16 @@ def products():
     try:
         products_list = mongo.db.products
         all_products = products_list.find({})
-        return render_template('products.html', title='Products', products=all_products)
+        all_categories = products_list.distinct("category")
+        return render_template('products.html', title='Products', products=all_products, categories=all_categories)
     except Exception as e:
         return str(e)
+
+
+# Still working on this
+"""@app.route('/shop_grid/modal/<string:username>', methods=['GET'])
+def get_product_modal(product):
+    return render_template('includes/product_modal.html', product=product)"""
 
 
 @app.route('/personal_info/')
@@ -179,7 +172,6 @@ def change_password():
         return render_template('change_password.html', title='Change Password', form=form)
     except Exception as e:
         return str(e)
-
 
 
 @app.route('/my_account/')
@@ -314,7 +306,7 @@ def add_product_to_cart():
                 all_total_price = all_total_price + quantity * unit_price
 
             session['all_total_quantity'] = all_total_quantity
-            session['all_total_price'] = '{:,.2f}'.format(all_total_price)
+            session['all_total_price'] = all_total_price
 
             flash("Product added to cart")
             return redirect(request.referrer)
