@@ -1,15 +1,44 @@
 {% extends 'header.html' %}
+{% block head %}
+{{ super() }}
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+
+{% endblock head %}
 {% import "includes/admin_panel_sidebar.html" as macros %}
 
 {% block content %}
+<div class="wrapper">
+
+    <!-- Sidebar -->
+
+
+    <!-- Page Content -->
+
+
+</div>
 <div class="row topgap">
     <div class="col-md-4">
       {{macros.build_site_navigation_admin_panel(admin_pages=pages, selected="Page Name")}}
     </div>
     <div class="col-md-8">
+        <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fas fa-align-left"></i>
+                <span></span>
+            </button>
+
+        </div>
+    </nav>
+    </div>
       <div id="my_account_data">this is sidebar</div>
     </div>
 </div>
 
+<script>
 
+</script>
 {% endblock %}

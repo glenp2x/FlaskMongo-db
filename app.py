@@ -39,6 +39,11 @@ def add(username, email, password, first_name):
     return redirect(url_for('products'))
 """
 
+@app.context_processor
+def utility_processor():
+    def isAdmin():
+        return True if 'isAdmin' in session and session["isAdmin"] == "1" else False
+    return dict(isAdmin=isAdmin)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -54,10 +59,12 @@ def method_not_allowed(e):
 def internal_server_error(e):
     return render_template("500.html", error=e)
 
+
 def promo_price(price, discount):
     discounted_price = price - (price * (discount/100))
     new_price = price - discounted_price
     return new_price
+
 
 @app.route('/')
 def index():
@@ -93,6 +100,7 @@ def signup_customer():
                     customers.insert_one({'email': email, 'password': hashed_password, 'username': email, 'active': 1,
                                           'create_date': formatted_date})
                     session['logged_in'] = True
+                    session['isAdmin'] = True
                     session['email'] = email
                     flash("Welcome " + session['email'] + " Thanks for signing up!")
                     return redirect(url_for('index'))
@@ -119,10 +127,13 @@ def login_customer():
                 if bcrypt.checkpw(form.password.data.encode('utf-8'), customer['password']):
                     if customer['active']:
                         session['logged_in'] = True
+                        if 'isAdmin' in customer:
+                            session['isAdmin'] = customer['isAdmin']
                         session['email'] = email
-                        session['first_name'] = customer['first_name']
+                        if 'first_name' in customer:
+                            session['first_name'] = customer['first_name']
                         flash('Logged in successfully!')
-                        return redirect(url_for('index'))
+                        return redirect(url_for('products'))
                     else:
                         flash("Account is not active")
                 else:
@@ -147,9 +158,16 @@ def products():
     try:
         products_list = mongo.db.products
         all_products = products_list.find({})
-        return render_template('products.html', title='Products', products=all_products)
+        all_categories = products_list.distinct("category")
+        return render_template('products.html', title='Products', products=all_products, categories=all_categories)
     except Exception as e:
         return str(e)
+
+
+# Still working on this
+"""@app.route('/shop_grid/modal/<string:username>', methods=['GET'])
+def get_product_modal(product):
+    return render_template('includes/product_modal.html', product=product)"""
 
 
 @app.route('/personal_info/')
@@ -174,12 +192,13 @@ def change_password():
         if request.method == "POST":
             if form.validate_on_submit():
                 print("Form Valid")
+
+
             flash("Password Changed")
 
         return render_template('change_password.html', title='Change Password', form=form)
     except Exception as e:
         return str(e)
-
 
 
 @app.route('/my_account/')
@@ -229,6 +248,15 @@ def generate_admin_page_list():
 
     ]
     return pages
+
+@app.route('/product_list/')
+def product_list():
+    try:
+        products_list = mongo.db.products
+        all_products = products_list.find({})
+        return render_template('admin/product_list.html', title='Product List',products=all_products)
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/add_product/', methods=["GET", "POST"])
@@ -314,7 +342,7 @@ def add_product_to_cart():
                 all_total_price = all_total_price + quantity * unit_price
 
             session['all_total_quantity'] = all_total_quantity
-            session['all_total_price'] = '{:,.2f}'.format(all_total_price)
+            session['all_total_price'] = all_total_price
 
             flash("Product added to cart")
             return redirect(request.referrer)

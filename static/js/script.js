@@ -37,3 +37,24 @@ $("#show-sidebar").click(function() {
 
 
 
+$(document).ready(function(){
+     $.ajax({
+     url: 'add_product',
+     type: "GET",
+     dataType: "html",
+     //data: {'option_id':option_id},
+     success: function(data){
+       $('#modal_body').html(data)
+      /* HERE I WANT TO ITERATE THROUGH THE data LIST OF OBJECTS */
+     },
+     error: function(xhr){
+     alert('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText);
+     $('#my_account_data').html(xhr.responseText)
+     }
+
+   });
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+});
