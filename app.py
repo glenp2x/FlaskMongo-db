@@ -1,5 +1,7 @@
 
 from flask import Flask, flash, render_template, redirect, url_for, session, request
+import flask_admin as admin
+from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
 import bcrypt
 import urllib
@@ -22,6 +24,18 @@ app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote("Password@
                         "@cluster0.qyjhe.mongodb.net/inventory_db?retryWrites=true&w=majority"
 
 mongo = PyMongo(app)
+
+class ProductView(ModelView):
+    column_list = ('product_name', 'category', 'description', 'size', 'barcode', 'brand', 'price', 'qty_in_stk', 'discount')
+    form = AddProductForm
+
+class UserView(ModelView):
+    column_list = ('username', 'email', 'first_name', 'isAdmin', 'active')
+    form = CustomerSignupForm
+
+admin = admin.Admin(app)
+admin.add_view(ProductView(mongo.db.products))
+admin.add_view(UserView(mongo.db.customers))
 
 # still working on this
 """
