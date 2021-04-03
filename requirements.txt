@@ -7,5 +7,7 @@ bcrypt
 Flask-PyMongo
 flask-mongoengine
 mongoengine
+pymongo
+Flask-Admin
 
 
