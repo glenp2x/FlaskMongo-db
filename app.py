@@ -400,6 +400,14 @@ def array_merge(first_array, second_array):
         return first_array.union(second_array)
     return False
 
+@app.route('/store_locator/')
+def store_locator():
+    return render_template('Store_locator.html', title='Store Locator')
+
+@app.route('/help/')
+def help():
+    return render_template('help.html', title='Help')
+
 
 if __name__ == "__main__":
     app.secret_key = 'mysecret'
