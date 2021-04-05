@@ -57,7 +57,7 @@
                             My account</a>
                         {% if isAdmin() %}
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ url_for('admin_panel') }}"><i class="fas fa-user-circle"></i>
+                        <a class="dropdown-item" href="{{ url_for('admin.index') }}"><i class="fas fa-user-circle"></i>
                             Admin Panel</a>
                         {% endif %}
                     </div>
@@ -88,7 +88,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/store_locator"><i class="fas fa-map-marker-alt"></i> Store
                             locator</a>
-                        <a class="dropdown-item" href="/temp.html/"><i class="fas fa-question-circle"></i> Help</a>
+                        <a class="dropdown-item" href="/help/"><i class="fas fa-question-circle"></i> Help</a>
                     </div>
                 </div>
                 <div id="my_right_sidenav" class="right_sidenav">
@@ -119,7 +119,7 @@
                                         <td><img src="/static/images/ProductImages/{{ image }}"
                                                  class="cart-item-image"/></td>
                                         <td style="text-align:left;">{{ product_name }}</td>
-                                        <td style="text-align:right;">{{ quantity }}</td>
+                                        <td style="text-align:right;"> {{ quantity }}</td>
                                         <td style="text-align:right;">${{ price }}</td>
                                         <td style="text-align:right;">
                                             <a href="{{ url_for('.delete_product', barcode=session['cart_item'][key]['barcode']) }}">
