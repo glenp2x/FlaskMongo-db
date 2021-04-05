@@ -1,57 +1,123 @@
 {% extends 'header.html' %}
-{% include 'includes/products_layout.html' %}
+{% block head %}
+{{ super() }}
+
+{% include 'includes/borrowed_style.html' %}
+
+{% endblock head %}
 
 {% block content %}
-<div class ="container-fluid">
-	<div id="product-grid">
-		<div class="txt-heading">Products</div>
+	{% include 'includes/preloader.html' %}
+
+
+<!-- Breadcrumbs -->
+<div class="breadcrumbs">
+	<div class="container">
 		<div class="row">
-			{% for product in products %}
-				<div class="responsecard">
-					<form method="POST" action="/add">
-						<div class="imagecontainer">
-							<a href="#">
-								<img class ="imagetile" src="/static/images/ProductImages/{{ product['image'] }}" alt="Product-Image" border="0">
-							</a>
-						</div>
-						<div class="product-tile-footer">
-
-
-							<p class="nametile">{{product['product_name']}}, {{product['size']}}</p>
-							<div class="rating">
-								<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-							</div>
-							<hr>
-
-							<p class="nametile">
-								{% if product['discount'] %}
-								<s>${{product['price']}}</s>
-									<br>
-								<span style = "color: red;">Now ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</span>
-								{% else %}
-									${{product['price']}}
-								{% endif %}
-							</p>
-
-							<div>
-								<input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
-								<input type="hidden" name="price" value="{{ product['price'] }}"/>
-								<div class ="row">
-									<input type="number" name="quantity" value="1" min="1" max="{{ product['qty_in_stk'] }}"/>
-									<input type="submit" value="Add" class=" btn btn-info" />
-								</div>
-
-
-							</div>
-						</div>
-					</form>
+			<div class="col-12">
+				<div class="bread-inner">
+					<ul class="bread-list">
+						<li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+						<li class="active"><a href="blog-single.html">Products</a></li>
+					</ul>
 				</div>
-
-			{% endfor %}
+			</div>
 		</div>
 	</div>
 </div>
+<!-- End Breadcrumbs -->
 
-{% include 'includes/products_suggestions.html' %}
+<!-- Product Style -->
+<section class="">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-3 col-md-4 col-12">
+				<div class="shop-sidebar">
+						<!-- Single Widget -->
+						<div class="single-widget category">
+							<h3 class="title">Categories</h3>
+							<ul class="categor-list">
+								{% for category in categories %}
+								{% if category %}
+								<li><a href="#">{{category}}</a></li>
+								{% endif %}
+								{% endfor %}
+							</ul>
+						</div>
+						<!--/ End Single Widget -->
+				</div>
+			</div>
+			<div class="col-lg-9 col-md-8 col-12">
+				<div class="row">
+					<div class="col-12">
+						<!-- Shop Top -->
+						<div class="shop-top">
+							<h5>Products</h5>
+						</div>
+						<!--/ End Shop Top -->
+					</div>
+				</div>
+				<div class="row">
+					{% for product in products %}
+
+						<div class="col-lg-3 col-md-4 col-6">
+							<form method="POST" action="/add">
+								<div class="single-product">
+									<div class="product-img">
+										<a href="product-details.html">
+											<img class="default-img" src="/static/images/ProductImages/{{ product['image'] }}" alt="Product-Image">
+											<img class="hover-img" src="/static/images/ProductImages/{{ product['image'] }}" alt="Product-Image">
+										</a>
+										<div class="button-head">
+											<div class="product-action">
+												<a data-toggle="modal" data-target="#productModal" title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+											</div>
+											<div class="product-action-2">
+												<input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
+												<input type="hidden" name="price" value="{{ product['price'] }}"/>
+												{% if product['qty_in_stk'] %}
+													<input type="submit" value="Add to cart" />
+													<input type="number" name="quantity" value="1" min="1" max="{{ product['qty_in_stk'] }}"/>
+												{% else %}
+													<p>Out of stock</p>
+													<!-- change product css image-->
+												{% endif %}
+											</div>
+										</div>
+									</div>
+									<div class="product-content">
+										<h3><a href="product-details.html">{{product['product_name']}}, {{product['size']}}</a></h3>
+										<div class="product-price">
+											<span>
+												{% if product['discount'] %}
+												<s>${{product['price']}}</s>
+													<br>
+												<span style = "color: red;">Now ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</span>
+												{% else %}
+													${{product['price']}}
+												{% endif %}
+											</span>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+					<!-- Modal -->
+					{% include 'includes/product_modal.html' %}
+					<!-- Modal end -->
+
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!--/ End Product Style 1  -->
+
+
+<!-- Required Js -->
+{% include 'includes/borrowed_scripts.html' %}
+{% include 'includes/scripts.html' %}
 
 {% endblock content %}
