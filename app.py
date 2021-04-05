@@ -33,25 +33,10 @@ class UserView(ModelView):
     column_list = ('username', 'email', 'first_name', 'isAdmin', 'active')
     form = CustomerSignupForm
 
-admin = admin.Admin(app)
+admin = admin.Admin(app, template_mode='bootstrap4')
 admin.add_view(ProductView(mongo.db.products))
 admin.add_view(UserView(mongo.db.customers))
 
-# still working on this
-"""
-@app.route('/add/<string:username>/<string:email>/<string:password>/<string:first_name>', methods=['GET'])
-def add(username, email, password, first_name):
-    customer = mongo.db.customers
-    customer.insert(
-        {
-            'username': username,
-            'email': email,
-            'password': password,
-            'first_name': first_name
-        }
-    )
-    return redirect(url_for('products'))
-"""
 
 @app.context_processor
 def utility_processor():
@@ -179,9 +164,25 @@ def products():
 
 
 # Still working on this
-"""@app.route('/shop_grid/modal/<string:username>', methods=['GET'])
-def get_product_modal(product):
+"""@app.route('/product/modal/<barcode>', methods=['GET'])
+def get_product_modal(barcode):
+    product = mongo.db.products.find(
+        {barcode: barcode}
+    )
     return render_template('includes/product_modal.html', product=product)"""
+
+
+@app.route('/product_page/<selected>', methods=['GET'])
+def product_page(selected):
+    product = mongo.db.products.find(
+        {"barcode": selected}
+    )
+    return render_template('product_page.html', product=product)
+
+
+@app.route('/checkout/')
+def checkout():
+    return render_template('checkout.html', title='Checkout')
 
 
 @app.route('/personal_info/')
