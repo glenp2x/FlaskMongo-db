@@ -1,4 +1,45 @@
 
 <div>
-    address info
+    <div class="box">
+        <div class="title">
+            <h4>
+                <span class="fas fa-home"></span>
+                <span>Address</span>
+                <div style="float:right; margin-right:60px; font-size:18px">
+                    <button onclick = "RenderRequestedPage({{url_for('change_address')}})" >Edit Address</button>
+                </div>
+
+            </h4>
+            <table style="border-collapse:separate;border-spacing:20px ;">
+                <tr>
+                    <td style="font-weight:bold;">Name : </td>
+                    <td>Abdul Samad</td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight:bold;">Address Line : </td>
+                    <td >2</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">City :</td>
+                    <td>North York</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">Postal Code : </td>
+                    <td>M2J2Z7</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">Country : </td>
+                    <td>Canada</td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
 </div>
+<div style="float:left; font-size:18px">
+    <span class="fa fa-plus-square-o"></span>
+    <a href="#" id="new_address">New Address</a>
+</div>
+

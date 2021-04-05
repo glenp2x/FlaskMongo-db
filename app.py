@@ -4,7 +4,7 @@ from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, ChangePersonalInfo,ChangeAddress
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -154,8 +154,12 @@ def products():
 
 @app.route('/personal_info/')
 def personal_info():
-    return render_template('personal_info.html', title='Personal Information')
-
+    try:
+        customer_list = mongo.db.customers
+        all_customers=customer_list.find_one({'email': session['email']})
+        return render_template('personal_info.html', title='Personal Information', customers=all_customers)
+    except Exception as e:
+        return str(e)
 
 @app.route('/address_info/')
 def address_info():
@@ -165,6 +169,11 @@ def address_info():
 @app.route('/payment_info/')
 def payment_info():
     return render_template('payment_info.html', title='Payment Information')
+
+
+@app.route('/order_history/')
+def order_history():
+    return render_template('order_history.html', title='Order History')
 
 
 @app.route('/change_password/', methods= ["GET","POST"])
@@ -180,6 +189,31 @@ def change_password():
     except Exception as e:
         return str(e)
 
+
+@app.route('/personal_info_change/', methods= ["GET", "POST"])
+def change_info():
+    try:
+        form = ChangePersonalInfo()
+        if request.method == "GET":
+            return render_template('includes/personal_info_change.html', title='Edit Personal Info', form=form)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/address_change/', methods= ["GET", "POST"])
+def change_address():
+    try:
+        form = ChangeAddress()
+        if request.method == "GET":
+            return render_template('includes/address_change.html', title='Edit Address', form=form)
+    except Exception as e:
+        return str(e)
+
+@app.context_processor
+def utility_processor():
+    def refresh():
+        return redirect(request.referrer)
+    return dict(refresh=refresh())
 
 
 @app.route('/my_account/')
@@ -207,7 +241,7 @@ def generate_page_list():
             "change_password")
          },
         {"name": "Order History", "url": url_for(
-            "payment_info")
+            "order_history")
          },
         {"name": "Recommended For You", "url": url_for(
             "payment_info")
@@ -241,6 +275,7 @@ def add_product():
         if request.method == "POST":
             products_list = mongo.db.products
             product_name = form.product_name.data
+            product_desc = form.description.data
             barcode = form.barcode.data
             brand = form.brand.data
             price = form.price.data

@@ -1,0 +1,49 @@
+
+<div>
+    <div class="box">
+        <form method="POST" action="/personal_info_change/">
+            <div class="title">
+                <h4>
+                    <span class="fas fa-home"></span>
+                    <span>Address</span>
+                    <div style="float:right; margin-right:60px; font-size:18px">
+                        <button onclick="{{refresh()}}" >Cancel</button>
+                    </div>
+
+
+                </h4>
+                <table style="border-collapse:separate;border-spacing:20px ;">
+                    <tr>
+                        <td style="font-weight:bold;">Name : </td>
+                        <td><input type="text" name="name"  /></td>
+                    </tr>
+
+                    <tr>
+                        <td style="font-weight:bold;">Address Line : </td>
+                        <td><input type="text" name="addressLine"  /></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">City :</td>
+                        <td><input type="text" name="city"  /></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Postal Code : </td>
+                        <td><input type="text" name="postalCode"  /></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Country : </td>
+                        <td><input type="text" name="country"  /></td>
+                    </tr>
+                </table>
+
+
+            <div class="form-group">
+                    {{form.submit(class="btn btn-primary")}}
+            </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+

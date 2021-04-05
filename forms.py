@@ -44,3 +44,21 @@ class ChangePasswordForm(FlaskForm):
         validators=[DataRequired(message='*Required'),
         EqualTo('new_password', message='Both password fields must be equal!')])
     submit = SubmitField("Change Password")
+
+
+class ChangePersonalInfo(FlaskForm):
+    firstName = StringField('First Name',validators=[DataRequired()])
+    middleName = StringField('Middle Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
+    emailId = StringField('Email Id',validators=[DataRequired()])
+    phoneNo = StringField('Phone No',validators=[DataRequired()])
+    submit=SubmitField("Save Changes")
+
+
+class ChangeAddress(FlaskForm):
+    name = StringField('name', validators=[DataRequired()])
+    addressLine= StringField('Address Line', validators=[DataRequired()])
+    city = StringField('city', validators=[DataRequired()])
+    postalCode = StringField('Postal Code', validators=[DataRequired()])
+    country= StringField('country', validators=[DataRequired()])
+    submit = SubmitField("Save Changes")
