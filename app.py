@@ -1,5 +1,5 @@
 
-from flask import Flask, flash, render_template, redirect, url_for, session, request
+from flask import Flask, flash, render_template, redirect, url_for, session, request, jsonify
 import flask_admin as admin
 from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
@@ -10,6 +10,7 @@ from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangeP
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
+from bson.objectid import ObjectId
 
 import gc
 
@@ -162,6 +163,19 @@ def products():
     except Exception as e:
         return str(e)
 
+
+@app.route('/product_detail/', methods = ["POST"])
+def product_detail():
+    try:
+        if request.method == "POST":
+            id = request.data
+            id = id.decode("utf-8")
+            product = mongo.db.products.find_one({'_id': ObjectId(id)})
+            #product = jsonify(product)
+            #product = request.json['data']
+        return  render_template('includes/product_modal.html', product = product)
+    except Exception as e:
+        return str(e)
 
 # Still working on this
 """@app.route('/product/modal/<barcode>', methods=['GET'])
@@ -414,6 +428,14 @@ def array_merge(first_array, second_array):
     elif isinstance(first_array, set) and isinstance(second_array, set):
         return first_array.union(second_array)
     return False
+
+@app.route('/store_locator/')
+def store_locator():
+    return render_template('Store_locator.html', title='Store Locator')
+
+@app.route('/help/')
+def help():
+    return render_template('help.html', title='Help')
 
 
 if __name__ == "__main__":
