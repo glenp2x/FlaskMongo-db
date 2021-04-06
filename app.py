@@ -1,6 +1,7 @@
 
 from flask import Flask, flash, render_template, redirect, url_for, session, request
 import flask_admin as admin
+from flask_admin.menu import MenuLink
 from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
 import bcrypt
@@ -39,9 +40,9 @@ class UserView(ModelView):
 
 
 admin = admin.Admin(app, template_mode='bootstrap4')
-#admin.add_link(MenuLink(name='Public Website', category='', url=url_for('main.home')))
 admin.add_view(ProductView(mongo.db.products))
 admin.add_view(UserView(mongo.db.customers))
+# admin.add_link(MenuLink(name='Public Website', category='', url=url_for('products.index')))
 
 
 @app.context_processor
@@ -378,7 +379,10 @@ def add_product_to_cart():
 @app.route('/empty')
 def empty_cart():
     try:
-        session.clear()
+        #session.clear()
+        session.pop('cart_item')
+        session.pop('all_total_quantity')
+        session.pop('all_total_price')
         return redirect(url_for('products'))
     except Exception as e:
         print(e)
@@ -457,16 +461,21 @@ def checkout():
                 phone_number = form.phone_number.data
                 recipient_email = form.recipient_email.data
                 ordered_products = []
-                for key, value in session['cart_item'].items():
-                    ordered_products.append(key)
+                for value in session['cart_item'].items():
+                    product_in_cart = {}
+                    product_in_cart["barcode"] = value[1]["barcode"]
+                    product_in_cart["price"] = value[1]["price"]
+                    product_in_cart["quantity"] = value[1]["quantity"]
+                    product_in_cart["product_name"] = value[1]["product_name"]
+                    ordered_products.append(product_in_cart)
                     """product_dict[key] = value
                     ordered_products= [session['cart_item'][key]['barcode']]"""
 
                 orders.insert_one({'card_number': hashed_card_number, 'card_holder': card_holder, 'cvc': hashed_cvc,
                                    'expires': expires, 'order_date': formatted_date, 'customer': customer,
                                    'name': name, 'address': address, 'city': city, 'post_code': post_code,
-                                   'phone_number': phone_number, 'email': recipient_email})
-                # orders.update()
+                                   'phone_number': phone_number, 'email': recipient_email,
+                                   'ordered_products': ordered_products })
                 flash("Order Confirmed! Check your email for details")
                 return redirect(url_for('products'))
 
