@@ -51,10 +51,12 @@
                             <h5>Normal Price: ${{ product['price'] }}</h5>
                             <br>
                             <h3>Promo Price: ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</h3>
-                            <br>
+
                         </div>
                     </div>
                     <h3>{{product['product_name']}}, {{product['size']}}</h3>
+                        <h4>{{product['description']}}</h4>
+
                     </form>
                 </div>
                 {% endfor %}
