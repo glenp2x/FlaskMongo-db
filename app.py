@@ -1,6 +1,7 @@
 
 from flask import Flask, flash, render_template, redirect, url_for, session, request, jsonify
 import flask_admin as admin
+from flask_admin.menu import MenuLink
 from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
 import bcrypt
@@ -34,10 +35,10 @@ class UserView(ModelView):
     column_list = ('username', 'email', 'first_name', 'isAdmin', 'active')
     form = CustomerSignupForm
 
-admin = admin.Admin(app)
+admin = admin.Admin(app,template_mode='bootstrap3')
 admin.add_view(ProductView(mongo.db.products))
 admin.add_view(UserView(mongo.db.customers))
-
+#admin.add_link(MenuLink(name='Public Website', category='', url=url_for('products.index')))
 # still working on this
 """
 @app.route('/add/<string:username>/<string:email>/<string:password>/<string:first_name>', methods=['GET'])
