@@ -1,0 +1,150 @@
+{% extends 'header.html' %}
+{% block head %}
+{{ super() }}
+
+<link rel="stylesheet" href="../static/css/checkout_style.css">
+
+{% endblock head %}
+
+{% block content %}
+
+<div class='container topgap'>
+  {% if 'cart_item' in session %}
+  <div class='window'>
+    <div class='order-info'>
+      <div class='order-info-content'>
+        <h2>Order Summary</h2>
+        <div class='line'></div>
+        {% for key, val in session['cart_item'].items() %}
+        {% set product_name = session['cart_item'][key]['product_name'] %}
+        {% set quantity = session['cart_item'][key]['quantity'] %}
+        {% set price = session['cart_item'][key]['price'] %}
+        {% set item_price = session['cart_item'][key]['total_price'] %}
+        {% set image = val['image'] %}
+        <table class='order-table'>
+          <tbody>
+            <tr>
+              <td><img src="/static/images/ProductImages/{{ image }}" class='full-width'/>
+              </td>
+              <td>
+                <br> {{ product_name }}<br> <span class='thin small'> Quantity: {{ quantity }} <br></span>
+                  <span class='thin small'> Price: ${{ price}}<br><br></span>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class='price'>${{ item_price }}</div>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+        <div class='line'></div>
+        {% endfor %}
+
+        <div class='total'>
+          <span style='float:left;'>
+            <div class='thin dense'>Items Subtotal</div>
+            <div class='thin dense'>HST 15%</div>
+            <div class='thin dense'>Delivery</div>
+            Total
+          </span>
+          <span style='float:right; text-align:right;'>
+            <div class='thin dense'>${{'{:,.2f}'.format(session['all_total_price']) }}</div>
+            <div class='thin dense'>${{'{:,.2f}'.format(session['all_total_price'] * 0.15) }}</div>
+            {% if session['all_total_price'] < 15 %}
+              {% set delivery_fee = 4.95 %}
+              <div class='thin dense'>${{ delivery_fee }}</div>
+            {% else %}
+              {% set delivery_fee = 0 %}
+              <div class='thin dense'>Free</div>
+            {% endif %}
+            ${{'{:,.2f}'.format(session['all_total_price'] + (session['all_total_price'] * 0.15) + delivery_fee ) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class='credit-info'>
+      <div class='credit-info-content'>
+        <table class='half-input-table'>
+          <tr><td>Please select your card: </td><td><div class='dropdown' id='card-dropdown'><div class='dropdown-btn' id='current-card'>Visa</div>
+            <div class='dropdown-select'>
+            <ul>
+              <li>Master Card</li>
+              <li>American Express</li>
+              </ul></div>
+            </div>
+           </td></tr>
+        </table>
+        <img src='https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png' height='20' class='credit-card-image' id='credit-card-image'/>
+
+
+        <form method="POST" action="/checkout/">
+
+			<fieldset class="form-group">
+				<legend class="border-bottom mb-4">Payment Information</legend>
+				<div class="form-group">
+					{{ form.card_number.label(class="form-control-label") }}
+					{{ form.card_number(class="form-control form-control-sm") }}
+				</div>
+				<div class="form-group">
+					{{ form.card_holder.label(class="form-control-label") }}
+					{{ form.card_holder(class="form-control form-control-sm") }}
+				</div>
+                <div class="form-group">
+					{{ form.expires.label(class="form-control-label") }}
+					{{ form.expires(class="form-control form-control-sm") }}
+				</div>
+                <div class="form-group">
+					{{ form.cvc.label(class="form-control-label") }}
+					{{ form.cvc(class="form-control form-control-sm") }}
+				</div>
+			</fieldset>
+            <br><br>
+
+            <fieldset class="form-group">
+				<legend class="border-bottom mb-4">Deliver Address</legend>
+				<div class="form-group">
+					{{ form.name.label(class="form-control-label") }}
+					{{ form.name(class="form-control form-control-sm") }}
+				</div>
+                <div class="form-group">
+					{{ form.address.label(class="form-control-label") }}
+					{{ form.address(class="form-control form-control-sm") }}
+				</div>
+				<div class="form-group">
+					{{ form.city.label(class="form-control-label") }}
+					{{ form.city(class="form-control form-control-sm") }}
+				</div>
+                <div class="form-group">
+					{{ form.post_code.label(class="form-control-label") }}
+					{{ form.post_code(class="form-control form-control-sm") }}
+				</div>
+                <div class="form-group">
+					{{ form.phone_number.label(class="form-control-label") }}
+					{{ form.phone_number(class="form-control form-control-sm") }}
+				</div>
+				<div class="form-group">
+					{{ form.recipient_email.label(class="form-control-label") }}
+					{{ form.recipient_email(class="form-control form-control-sm") }}
+				</div>
+                <div class="form-group">
+				{{ form.submit(class="btn btn-primary") }}
+			    </div>
+			</fieldset>
+		</form>
+
+      </div>
+    </div>
+  </div>
+
+{% else %}
+    <p><a class="" href="{{ url_for('products') }}">Start shopping</a></p>
+
+{% endif %}
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='js/checkout_script.js') }}"></script>
+{% endblock %}

@@ -6,7 +6,7 @@ from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -190,11 +190,6 @@ def product_page(selected):
         {"barcode": selected}
     )
     return render_template('product_page.html', product=product)
-
-
-@app.route('/checkout/')
-def checkout():
-    return render_template('checkout.html', title='Checkout')
 
 
 @app.route('/personal_info/')
@@ -437,6 +432,52 @@ def store_locator():
 @app.route('/help/')
 def help():
     return render_template('help.html', title='Help')
+
+
+@app.route('/checkout/', methods=["GET", "POST"])
+def checkout():
+    try:
+        form = OrderForm()
+        if request.method == "POST":
+            if session['logged_in']:
+                orders = mongo.db.orders
+                card_number = form.card_number.data
+                card_holder = form.card_holder.data
+                expires = form.expires.data
+                cvc = form.cvc.data
+                hashed_card_number = bcrypt.hashpw(card_number.encode('utf-8'), bcrypt.gensalt())
+                hashed_cvc = bcrypt.hashpw(cvc.encode('utf-8'), bcrypt.gensalt())
+                now = datetime.now()
+                formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+                customer = session['email']
+                name = form.name.data
+                address = form.address.data
+                city = form.city.data
+                post_code = form.post_code.data
+                phone_number = form.phone_number.data
+                recipient_email = form.recipient_email.data
+                ordered_products = []
+                for key, value in session['cart_item'].items():
+                    ordered_products.append(key)
+                    """product_dict[key] = value
+                    ordered_products= [session['cart_item'][key]['barcode']]"""
+
+                orders.insert_one({'card_number': hashed_card_number, 'card_holder': card_holder, 'cvc': hashed_cvc,
+                                   'expires': expires, 'order_date': formatted_date, 'customer': customer,
+                                   'name': name, 'address': address, 'city': city, 'post_code': post_code,
+                                   'phone_number': phone_number, 'email': recipient_email})
+                # orders.update()
+                flash("Order Confirmed! Check your email for details")
+                return redirect(url_for('products'))
+
+            else:
+                flash("Please login to continue")
+                return redirect(url_for('login_customer'))
+
+        return render_template('checkout.html', title='Checkout', form=form)
+
+    except Exception as e:
+        return str(e)
 
 
 if __name__ == "__main__":
