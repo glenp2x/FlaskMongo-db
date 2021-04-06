@@ -137,7 +137,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <button class="btn btn-info btn-block">Checkout <i class="fas fa-truck"></i></button>
+                                <a href="{{ url_for('checkout') }}"><button class="btn btn-info btn-block">Checkout <i class="fas fa-truck"></i></button></a>
 
                                 {% else: %}
                                 <div class="no-records">Your Cart is Empty</div>
