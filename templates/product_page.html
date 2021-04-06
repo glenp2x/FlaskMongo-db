@@ -1,0 +1,154 @@
+{% extends 'header.html' %}
+{% block head %}
+{{ super() }}
+
+{% include 'includes/borrowed_style.html' %}
+
+<!--<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+<link href="style.css" rel="stylesheet">
+<meta name="robots" content="noindex,follow" />
+<link rel="stylesheet" href="../static/borrowed/css/product_style.css">
+-->
+
+{% endblock head %}
+
+{% block content %}
+
+<div class="row no-gutters topgap">
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="product-gallery">
+            <div class="single-slider">
+                <img src="/static/images/ProductImages/{{product[0].image}}" alt="Product-Image" width="500" height="600">
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="quickview-content">
+            <h2>{{product[0].product_name}}</h2>
+            <div class="quickview-ratting-review">
+                <div class="quickview-ratting-wrap">
+                    <div class="quickview-ratting">
+                        <i class="yellow fa fa-star"></i>
+                        <i class="yellow fa fa-star"></i>
+                        <i class="yellow fa fa-star"></i>
+                        <i class="yellow fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <a href="#"> (1 customer review)</a>
+                </div>
+                <div class="quickview-stock">
+                  {% if product[0].qty_in_stk %}
+                    <span><i class="fa fa-check-circle-o"></i> in stock</span>
+                  {% else %}
+                    <span><i class="fa fa-times-circle-o" style="color: Red;"></i> Out of stock</span>
+                  {% endif %}
+
+                </div>
+            </div>
+            <h3>${{product[0].price}}</h3>
+            <div class="quickview-peragraph">
+                <p>{{product.description}}</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia iste laborum ad impedit pariatur esse optio tempora sint ullam autem deleniti nam in quos qui nemo ipsum numquam.</p>
+            </div>
+            <div class="size">
+                <div class="row">
+                    <div class="col-lg-6 col-12">
+                        <h5 class="title">Size</h5>
+                        <select>
+                            <option selected="selected">N/A</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <h5 class="title">Color</h5>
+                        <select>
+                            <option selected="selected">N/A</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="quantity">
+                <!-- Input Order -->
+                <div class="input-group">
+                  {% if product[0].qty_in_stk %}
+                    <div class="button minus">
+                        <button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+                            <i class="ti-minus"></i>
+                        </button>
+                    </div>
+                    <input type="text" name="quant[1]" class="input-number"  data-min="1" data-max="1000" value="1">
+                    <div class="button plus">
+                        <button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
+                            <i class="ti-plus"></i>
+                        </button>
+                    </div>
+                  {% endif %}
+                </div>
+                <!--/ End Input Order -->
+            </div>
+            <div class="add-to-cart">
+              {% if product[0].qty_in_stk %}
+                <a href="#" class="btn">Add to cart</a>
+              {% else %}
+                <span>Out of Stock</span>
+              {% endif %}
+                <a href="#" class="btn min"><i class="ti-heart"></i></a>
+            </div>
+            <div class="default-social">
+                <h4 class="share-now">Share:</h4>
+                <ul>
+                    <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+                    <li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
+                    <li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!--<main class="container">
+
+
+  <div class="left-column">
+    <img class= "active" src="/static/images/ProductImages/{{product[0].image}}" alt="Product-Image">
+  </div>
+
+
+
+  <div class="right-column">
+
+
+    <div class="product-description">
+      <span>Product</span>
+      <h1>{{product[0].product_name}}</h1>
+      <p>
+        {{product[0].description}}
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+    </div>
+
+
+    <div class="product-configuration">
+
+
+    </div>
+
+
+    <div class="product-price">
+      <span>${{product[0].price}} </span>
+      <a href="#" class="cart-btn">Add to cart</a>
+    </div>
+  </div>
+</main>
+-->
+
+{% endblock %}
