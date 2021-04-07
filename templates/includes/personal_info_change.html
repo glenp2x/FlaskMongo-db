@@ -7,10 +7,7 @@
                 <h4>
                     <span class="fas fa-user-circle"></span>
                     <span>Personal Info</span>
-                    <div style="float:right; margin-right:60px; font-size:18px">
-<!--                        <button onclick="RenderRequestedPage({{url_for('personal_info')}})" >Cancel</button>-->
-                        <button onclick="return redirect(request.referrer)" >Cancel</button>
-                    </div>
+
 
                 </h4>
                 <table style="border-collapse:separate;border-spacing:20px ;">
@@ -37,6 +34,7 @@
                 </table>
                 <div class="form-group">
                     {{form.submit(class="btn btn-primary")}}
+                    {{form.cancel(class="btn btn-danger" )}}
                 </div>
 
             </div>

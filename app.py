@@ -1,5 +1,5 @@
 
-from flask import Flask, flash, render_template, redirect, url_for, session, request
+from flask import Flask, flash, render_template, redirect, url_for, session, request, render_template_string
 import flask_admin as admin
 from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
@@ -55,9 +55,14 @@ def add(username, email, password, first_name):
 
 @app.context_processor
 def utility_processor():
+
     def isAdmin():
         return True if 'isAdmin' in session and session["isAdmin"] == "1" else False
     return dict(isAdmin=isAdmin)
+
+
+
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -193,9 +198,19 @@ def personal_info():
     except Exception as e:
         return str(e)
 
-@app.route('/address_info/')
+
+@app.route('/address_info/', methods= ["GET","POST"])
 def address_info():
+    form=ChangeAddress()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            flash("Address information changed")
+        #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
+        return render_template('address_info_return.html', title='Address Information')
     return render_template('address_info.html', title='Address Information')
+
+
+
 
 
 @app.route('/payment_info/')
@@ -205,8 +220,24 @@ def payment_info():
 
 @app.route('/order_history/')
 def order_history():
-    return render_template('order_history.html', title='Order History')
+    try:
+        all_orders = mongo.db.orders
+        if all_orders.find({'customer':session['email']}):
+            order = all_orders.find({'customer': session['email']})
+        return render_template('includes/order_history.html', title='Order History',order=order)
 
+
+
+
+
+    except Exception as e:
+        return str(e)
+
+
+
+@app.route('/products_suggestions/', methods= ["GET","POST"])
+def product_suggestion():
+    return render_template('includes/products_suggestions.html', title='Product Suggestions')
 
 @app.route('/change_password/', methods= ["GET","POST"])
 def change_password():
@@ -243,11 +274,12 @@ def change_address():
     except Exception as e:
         return str(e)
 
-@app.context_processor
-def utility_processor():
-    def refresh():
-        return redirect(request.referrer)
-    return dict(refresh=refresh())
+
+
+@app.route('/address_info_return/', methods=["GET"])
+def address_info_return():
+    return render_template('address_info_return.html', title='Address information')
+
 
 
 @app.route('/my_account/')
@@ -278,7 +310,7 @@ def generate_page_list():
             "order_history")
          },
         {"name": "Recommended For You", "url": url_for(
-            "payment_info")
+            "product_suggestion")
          },
         {"name": "Ratings by you", "url": url_for(
             "payment_info")

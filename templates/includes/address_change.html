@@ -1,14 +1,12 @@
 
 <div>
     <div class="box">
-        <form method="POST" action="/personal_info_change/">
+        <form method="POST" action="/address_info_return/">
             <div class="title">
                 <h4>
                     <span class="fas fa-home"></span>
                     <span>Address</span>
-                    <div style="float:right; margin-right:60px; font-size:18px">
-                        <button onclick="{{refresh()}}" >Cancel</button>
-                    </div>
+
 
 
                 </h4>
@@ -39,6 +37,7 @@
 
             <div class="form-group">
                     {{form.submit(class="btn btn-primary")}}
+                    <a href="{{ url_for('address_info_return') }}" class="btn btn-secondary">Cancel</a>
             </div>
             </div>
         </form>
