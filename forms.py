@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, TextAreaField, IntegerField, DateTimeField
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms import validators
@@ -64,3 +64,17 @@ class ChangeAddress(FlaskForm):
     country= StringField('country', validators=[DataRequired()])
     submit = SubmitField("Save Changes")
     cancel = SubmitField("Cancel")
+
+class OrderForm(FlaskForm):
+    card_number = StringField('Card Number', [DataRequired()])
+    card_holder = StringField('Card Holder', [DataRequired()])
+    expires = DateTimeField('Expires', [DataRequired()])
+    cvc = StringField('CVC', [DataRequired()])
+    name = StringField('Full Name', [DataRequired()])
+    address = TextAreaField('Address', [DataRequired()])
+    city = StringField('City', [DataRequired()])
+    post_code = StringField('Post code', [DataRequired()])
+    phone_number = StringField('Phone Number', [DataRequired()])
+    recipient_email = StringField('Recipient Email', [DataRequired()])
+    submit = SubmitField('Order')
+
