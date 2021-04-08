@@ -1,16 +1,18 @@
 
-from flask import Flask, flash, render_template, redirect, url_for, session, request, jsonify
+from flask import Flask, flash, render_template, redirect, url_for, session, request
 import flask_admin as admin
+from flask_admin.menu import MenuLink
 from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
 from bson.objectid import ObjectId
+from flask_admin.menu import MenuLink
 
 import gc
 
@@ -26,39 +28,29 @@ app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote("Password@
 
 mongo = PyMongo(app)
 
+
 class ProductView(ModelView):
     column_list = ('product_name', 'category', 'description', 'size', 'barcode', 'brand', 'price', 'qty_in_stk', 'discount')
     form = AddProductForm
+
 
 class UserView(ModelView):
     column_list = ('username', 'email', 'first_name', 'isAdmin', 'active')
     form = CustomerSignupForm
 
-admin = admin.Admin(app)
+
+admin = admin.Admin(app, template_mode='bootstrap4')
 admin.add_view(ProductView(mongo.db.products))
 admin.add_view(UserView(mongo.db.customers))
+# admin.add_link(MenuLink(name='Public Website', category='', url=url_for('products.index')))
 
-# still working on this
-"""
-@app.route('/add/<string:username>/<string:email>/<string:password>/<string:first_name>', methods=['GET'])
-def add(username, email, password, first_name):
-    customer = mongo.db.customers
-    customer.insert(
-        {
-            'username': username,
-            'email': email,
-            'password': password,
-            'first_name': first_name
-        }
-    )
-    return redirect(url_for('products'))
-"""
 
 @app.context_processor
 def utility_processor():
     def isAdmin():
         return True if 'isAdmin' in session and session["isAdmin"] == "1" else False
     return dict(isAdmin=isAdmin)
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -192,10 +184,13 @@ def product_detail():
     except Exception as e:
         return str(e)
 
-# Still working on this
-"""@app.route('/shop_grid/modal/<string:username>', methods=['GET'])
-def get_product_modal(product):
-    return render_template('includes/product_modal.html', product=product)"""
+
+@app.route('/product_page/<selected>', methods=['GET'])
+def product_page(selected):
+    product = mongo.db.products.find(
+        {"barcode": selected}
+    )
+    return render_template('product_page.html', product=product)
 
 
 @app.route('/personal_info/')
@@ -221,7 +216,6 @@ def change_password():
             if form.validate_on_submit():
                 print("Form Valid")
 
-
             flash("Password Changed")
 
         return render_template('change_password.html', title='Change Password', form=form)
@@ -234,10 +228,12 @@ def my_account():
     pages = generate_page_list()
     return render_template('my_account.html', title='Account', pages=pages)
 
+
 @app.route('/admin_panel/')
 def admin_panel():
     pages = generate_admin_page_list()
     return render_template('admin_panel.html', title='Admin Panel', pages=pages)
+
 
 def generate_page_list():
     pages = [
@@ -265,6 +261,7 @@ def generate_page_list():
     ]
     return pages
 
+
 def generate_admin_page_list():
     pages = [
         {"name": "Manage users", "url": url_for(
@@ -276,6 +273,7 @@ def generate_admin_page_list():
 
     ]
     return pages
+
 
 @app.route('/product_list/')
 def product_list():
@@ -330,7 +328,6 @@ def add_product_to_cart():
         quantity = int(request.form['quantity'])
         barcode = request.form['barcode']
 
-
         # validate the received values
         if quantity and barcode and request.method == 'POST':
             row = products_list.find_one({'barcode': barcode})
@@ -344,7 +341,6 @@ def add_product_to_cart():
 
             all_total_price = 0
             all_total_quantity = 0
-
 
             session.modified = True
             if 'cart_item' in session:
@@ -383,7 +379,10 @@ def add_product_to_cart():
 @app.route('/empty')
 def empty_cart():
     try:
-        session.clear()
+        #session.clear()
+        session.pop('cart_item')
+        session.pop('all_total_quantity')
+        session.pop('all_total_price')
         return redirect(url_for('products'))
     except Exception as e:
         print(e)
@@ -428,13 +427,66 @@ def array_merge(first_array, second_array):
         return first_array.union(second_array)
     return False
 
+
 @app.route('/store_locator/')
 def store_locator():
     return render_template('Store_locator.html', title='Store Locator')
 
+
 @app.route('/help/')
 def help():
     return render_template('help.html', title='Help')
+
+
+@app.route('/checkout/', methods=["GET", "POST"])
+def checkout():
+    try:
+        form = OrderForm()
+        if request.method == "POST":
+            if session['logged_in']:
+                orders = mongo.db.orders
+                card_number = form.card_number.data
+                card_holder = form.card_holder.data
+                expires = form.expires.data
+                cvc = form.cvc.data
+                hashed_card_number = bcrypt.hashpw(card_number.encode('utf-8'), bcrypt.gensalt())
+                hashed_cvc = bcrypt.hashpw(cvc.encode('utf-8'), bcrypt.gensalt())
+                now = datetime.now()
+                formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+                customer = session['email']
+                name = form.name.data
+                address = form.address.data
+                city = form.city.data
+                post_code = form.post_code.data
+                phone_number = form.phone_number.data
+                recipient_email = form.recipient_email.data
+                ordered_products = []
+                for value in session['cart_item'].items():
+                    product_in_cart = {}
+                    product_in_cart["barcode"] = value[1]["barcode"]
+                    product_in_cart["price"] = value[1]["price"]
+                    product_in_cart["quantity"] = value[1]["quantity"]
+                    product_in_cart["product_name"] = value[1]["product_name"]
+                    ordered_products.append(product_in_cart)
+                    """product_dict[key] = value
+                    ordered_products= [session['cart_item'][key]['barcode']]"""
+
+                orders.insert_one({'card_number': hashed_card_number, 'card_holder': card_holder, 'cvc': hashed_cvc,
+                                   'expires': expires, 'order_date': formatted_date, 'customer': customer,
+                                   'name': name, 'address': address, 'city': city, 'post_code': post_code,
+                                   'phone_number': phone_number, 'email': recipient_email,
+                                   'ordered_products': ordered_products })
+                flash("Order Confirmed! Check your email for details")
+                return redirect(url_for('products'))
+
+            else:
+                flash("Please login to continue")
+                return redirect(url_for('login_customer'))
+
+        return render_template('checkout.html', title='Checkout', form=form)
+
+    except Exception as e:
+        return str(e)
 
 
 if __name__ == "__main__":
