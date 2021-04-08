@@ -2,7 +2,6 @@
 *{
     margin:0;
     padding: 0;
-/*    font-family: 'Poppins';, sans-serif */
 
 }
 #banner{
@@ -31,6 +30,8 @@
     font-size: 70px;
     font-family: 'Kaushan Script', cursive;
 }
+
+
 .banner-text p{
     font-size: 18px;
     font-style: italic;
@@ -152,6 +153,12 @@ nav ul li a{
 }
 .title-text h1{
     font-size: 30px;
+}
+
+.title-text .cursive{
+    font-size: 50px;
+    font-family: 'Kaushan Script', cursive;
+
 }
 
 .feature-box{
@@ -322,7 +329,7 @@ hr{
     color: #27c0ff;
     font-size: 20px;
 }
-.user-info h3{
+.user-info .red{
     color: #ec0f0f;
 
 }
