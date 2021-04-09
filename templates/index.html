@@ -1,6 +1,7 @@
 {% extends 'header.html' %}
 
 {% block content %}
+<div style="font-family: 'Poppins'; sans-serif" >
     <section id = "banner">
         <div class= "banner-text">
             <h1> Price Mart</h1>
@@ -8,21 +9,21 @@
             <div class ="banner-btn">
                 <a href ="#promo"><span></span>Products On Sale</a>
                 <a href="{{ url_for('products') }}"><span></span>Shop Now</a>
-            <br>
-            <br>
-            <h3>We Deliver Free Anywhere in Toronto with a minimum order worth CAD 15</h3>
+                <br>
+                <br>
+                <h3 style="color:white">We Deliver Free Anywhere in Toronto with a minimum order worth CAD 15</h3>
             </div>
         </div>
     </section>
     <div id ="sideNav" class = "topgap">
         <nav>
-        <ul>
-            <li><a href="#banner">HOME</a></li>
-            <li><a href="#promo">SALES AND PROMOTIONS</a></li>
-            <li><a href="#delivery">DELIVERY TERMS</a></li>
-            <li><a href="#feature">ABOUT THE COMPANY</a></li>
-            <li><a href="#footer">CONTACT US</a></li>
-        </ul>
+            <ul>
+                <li><a href="#banner">HOME</a></li>
+                <li><a href="#promo">SALES AND PROMOTIONS</a></li>
+                <li><a href="#delivery">DELIVERY TERMS</a></li>
+                <li><a href="#feature">ABOUT THE COMPANY</a></li>
+                <li><a href="#footer">CONTACT US</a></li>
+            </ul>
         </nav>
     </div>
     <div id = "menuBtn" class = "topgap">
@@ -38,23 +39,23 @@
             <div class ="promo-row">
                 {% for product in products %}
 
-                <div class = "promo-col">
+                <div class="col-lg-6 col-md-6 col-6">
                     <form method="POST" action="/add">
                     <div class ="user">
                         <img src = "/static/images/ProductImages/{{ product['image'] }}">
                         <div class = "user-info">
                             <input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
-                        <input type="hidden" name="price" value="{{ product['price'] }}"/>
+                            <input type="hidden" name="price" value="{{ product['price'] }}"/>
                             <input type="number" name="quantity" value="1" min="1" max="{{ product['qty_in_stk'] }}"/>
-                           <input type="submit" value="Add" class=" btn btn-info" />
+                            <input type="submit" value="Add" class=" btn-sm btn-info" />
                             <br>
-                            <h5>Normal Price: ${{ product['price'] }}</h5>
                             <br>
-                            <h3>Promo Price: ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</h3>
+                            <s><h6 style="font-weight: 600;">Normal Price: ${{ product['price'] }}</h6></s>
+                            <h5 class="red" style="font-weight: bold;">Promo Price: ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</h5>
                             <br>
                         </div>
                     </div>
-                    <h3>{{product['product_name']}}, {{product['size']}}</h3>
+                    <h4 style="font-weight: 600;">{{product['product_name']}}, {{product['size']}}</h4>
                     </form>
                 </div>
                 {% endfor %}
@@ -72,45 +73,44 @@
             <div class ="single-delivery">
                 <img src ="/static/images/deliveryfree.jpg">
                 <div class ="overlay"></div>
-                <div class="delivery-desc">
-                </div>
-
-</section>
- <section id ="feature">
-    <div class = "title-text">
-        <p>ABOUT THE COMPANY</p>
-        <h1>Price Mart </h1>
-    </div>
-    <div class = "feature-box">
-        <div class ="features">
-            <h1>OUR COMPANY</h1>
-            <div class="features-desc">
-                <div class ="feature-icon">
-                    <i class="fa fa-building-o"></i>
-                </div>
-                <div class ="feature-text">
-                    <p>We are promising the customers to provide quality products.</p>
-                </div>
+                <div class="delivery-desc"></div>
             </div>
-            <h1>OUR AIM</h1>
-            <div class="features-desc">
-                <div class ="feature-icon">
-                    <i class="fa fa-bullseye"></i>
+        </div>
+    </section>
+     <section id ="feature">
+        <div class = "title-text">
+            <p>ABOUT THE COMPANY</p>
+            <h2 class="cursive">Price Mart </h2>
+        </div>
+        <div class = "feature-box">
+            <div class ="features">
+                <h1>OUR COMPANY</h1>
+                <div class="features-desc">
+                    <div class ="feature-icon">
+                        <i class="fa fa-building-o"></i>
+                    </div>
+                    <div class ="feature-text">
+                        <p>We are promising the customers to provide quality products.</p>
+                    </div>
                 </div>
-                <div class ="feature-text">
-                    <p> We are providing fresh products and always helping people to get their delivery in quickest way.</p>
-                    <p> Excellent Customer Service </p>
+                <h1>OUR AIM</h1>
+                <div class="features-desc">
+                    <div class ="feature-icon">
+                        <i class="fa fa-bullseye"></i>
+                    </div>
+                    <div class ="feature-text">
+                        <p> We are providing fresh products and always helping people to get their delivery in quickest way.</p>
+                        <p> Excellent Customer Service </p>
+                    </div>
                 </div>
+
             </div>
-
+            <div class ="features-img">
+                <img src = "/static/images/store.jpg">
+            </div>
         </div>
-        <div class ="features-img">
-            <img src = "/static/images/store.jpg">
-        </div>
-    </div>
-</section>
-
-</section>
+    </section>
+</div>
 
 
     <script>
@@ -127,11 +127,10 @@
             menu.src ="/static/images/menu.png";
         }
     }
-var scroll = new SmoothScroll('a[href*="#"]', {
-speed: 1000,
-speedAsDuration: true
-});
-</script>
-    </section>
+    var scroll = new SmoothScroll('a[href*="#"]', {
+    speed: 1000,
+    speedAsDuration: true
+    });
+    </script>
 {% endblock content %}
 
