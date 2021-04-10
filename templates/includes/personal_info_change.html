@@ -1,0 +1,45 @@
+
+
+<div>
+    <div class="box">
+        <form method="POST" action="/personal_info_change/">
+            <div class="title">
+                <h4>
+                    <span class="fas fa-user-circle"></span>
+                    <span>Personal Info</span>
+
+
+                </h4>
+                <table style="border-collapse:separate;border-spacing:20px ;">
+                    <tr>
+                        <td>First Name :</td>
+                        <td><input type="text" name="firstname"  /></td>
+                    </tr>
+                    <tr>
+                        <td>Middle Name :</td>
+                        <td><input type="text" name="middlename"  /></td>
+                    </tr>
+                    <tr>
+                        <td >Last Name :</td>
+                        <td ><input type="text" name="LastName" /></td>
+                    </tr>
+                    <tr>
+                        <td>Email id :</td>
+                        <td><input type="text" name="Emailid" /></td>
+                    </tr>
+                    <tr>
+                        <td>Phone :</td>
+                        <td><input type="text" name="Phone" /></td>
+                    </tr>
+                </table>
+                <div class="form-group">
+                    {{form.submit(class="btn btn-primary")}}
+                    {{form.cancel(class="btn btn-danger" )}}
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
