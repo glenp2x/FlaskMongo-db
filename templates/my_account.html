@@ -1,10 +1,34 @@
 {% extends 'header.html' %}
+{% block head %}
+{{ super() }}
+
+{% include 'includes/borrowed_style.html' %}
+<style>
+    div.example1{
+        background: #F6F7FB;
+        margin-top:30 px;
+        padding: 30px;
+        box-sizing:border-box;
+        margin-left:2rem;
+        width:50%;
+        margin-right:3rem;
+        text-align: left;
+        line-height: 24px;
+
+
+    }
+
+</style>
+
+{% endblock head %}
 {% import "includes/my_account_sidebar.html" as macros %}
 
+
 {% block content %}
+
 <div class="row topgap">
 
-    <div class="col-md-4">
+    <div class="example1 col-md-2 "  >
 
         {{macros.build_site_navigation_my_account(pages=pages, selected="Page Name")}}
 
@@ -17,6 +41,7 @@
           {% endblock %}</div>
     </div>
 </div>
+
 <script type="text/javascript">
 
     function RenderRequestedPage(url){

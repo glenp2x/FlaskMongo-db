@@ -232,9 +232,25 @@ def payment_info():
 def order_history():
     try:
         all_orders = mongo.db.orders
+        all_products = mongo.db.products
+        order={}
+        products={}
+        item1=[]
+
+
+
         if all_orders.find({'customer':session['email']}):
-            order = all_orders.find({'customer': session['email']})
-        return render_template('includes/order_history.html', title='Order History',order=order)
+            order = list(all_orders.find({'customer': session['email']}))
+            #order_items=order.items()
+
+            #for x in order:
+                #if 'ordered_products' in x:
+                    #for item in x['ordered_products']:
+                        #item1.append(item)
+
+        return render_template('includes/order_history.html', title='Order History', order=order, product=item1)
+
+
 
 
 
@@ -320,12 +336,12 @@ def generate_page_list():
         {"name": "Order History", "url": url_for(
             "order_history")
          },
-        {"name": "Recommended For You", "url": url_for(
-            "product_suggestion")
-         },
-        {"name": "Ratings by you", "url": url_for(
-            "payment_info")
-         },
+        # {"name": "Recommended For You", "url": url_for(
+        #    "product_suggestion")
+        #  },
+        # {"name": "Ratings by you", "url": url_for(
+        #     "payment_info")
+         # },
     ]
     return pages
 
