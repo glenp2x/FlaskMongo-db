@@ -66,5 +66,5 @@ class UsersForm(FlaskForm):
     first_name = StringField('First Name', [DataRequired()])
     active = BooleanField('Is Active?')
     isAdmin = BooleanField('Is Admin?')
-    accept_terms = BooleanField('I accept the Terms of Service and Privacy Notice', [DataRequired()])
+    #accept_terms = BooleanField('I accept the Terms of Service and Privacy Notice', [DataRequired()])
 
