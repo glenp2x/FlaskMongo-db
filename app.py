@@ -1,4 +1,3 @@
-
 from flask import Flask, flash, render_template, redirect, url_for, session, request
 import flask_admin as admin
 from flask_admin.menu import MenuLink
@@ -64,8 +63,6 @@ class MyHomeView(AdminIndexView):
                         chart2_labels.append(product["product_name"])
                         chart2_values.append(product["quantity"])
                         chart4_values.append(float(product["price"]) * int(product["quantity"]))
-
-
 
         no_of_products = mongo.db.products.find({}).count()
         no_of_orders = mongo.db.orders.find({}).count()
@@ -147,6 +144,7 @@ def method_not_allowed(e):
 def internal_server_error(e):
     return render_template("500.html", error=e)
 
+
 def revenue_last_x_days(start_days=7, end_days = 0):
     startDate = datetime.now() - timedelta(start_days)
     endDate = datetime.now() - timedelta(end_days)
@@ -173,7 +171,6 @@ def revenue_last_x_days(start_days=7, end_days = 0):
         ])
     )
     return x
-
 
 
 def promo_price(price, discount):
