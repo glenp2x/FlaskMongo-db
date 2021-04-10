@@ -324,12 +324,17 @@ def personal_info():
 @app.route('/address_info/', methods= ["GET","POST"])
 def address_info():
     form=ChangeAddress()
+    all_orders = mongo.db.orders
+    order = list(all_orders.find({'customer': session['email']}))
     if request.method == "POST":
         if form.validate_on_submit():
             flash("Address information changed")
         #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
-        return render_template('address_info_return.html', title='Address Information')
-    return render_template('address_info.html', title='Address Information')
+        if all_orders.find({'customer': session['email']}):
+            order = all_orders.findOne({'customer': session['email']})
+
+        return render_template('address_info_return.html', title='Address Information',order=order)
+    return render_template('address_info.html', title='Address Information',order=order)
 
 
 
@@ -411,6 +416,13 @@ def change_address():
     except Exception as e:
         return str(e)
 
+
+@app.route('/shipping_info/',methods=["GET"])
+def shipping_info():
+    all_orders = mongo.db.orders
+    order = list(all_orders.find({'customer': session['email']}))
+
+    return render_template('includes/shipping_info.html', title='Order History', order=order)
 
 
 @app.route('/address_info_return/', methods=["GET"])
