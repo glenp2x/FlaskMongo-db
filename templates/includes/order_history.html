@@ -1,0 +1,132 @@
+<div>
+    <div class="box">
+        <div class="title">
+            <h4>
+                <span class="fas fa-home"></span>
+                <span>Order History</span>
+                <br>
+                <h3>Your Orders</h3>
+                {% for item in order %}
+                    <div class="main ">
+                        <div class="item example2">
+
+                            <div class="item_header">
+                                <div class="item_header_text">
+                                    Order Date: {{item['order_date']}}
+                                   <!-- <span style="float:center;">Total: ${{item['total']}}</span>-->
+                                    <span style="float:right;">Order Number: {{item['_id']}}</span>
+                                </div>
+                            </div>
+                            <div class="item1">
+                                <div class="row">
+                                    {% if 'ordered_products' in item %}
+
+
+                                        <div class="col-8">
+                                            {{item['name']}}
+                                            {% for i in item['ordered_products'] %}
+                                                <div class="image1" >
+                                                    {{i['product_name']}}
+
+
+                                                    <img class="a1" src="/static/images/ProductImages/{{i['barcode']}}.jpg">
+                                                    Price :{{i['price']}}
+                                                    <br>
+                                                    Quantity :{{i['quantity']}}
+                                                </div>
+                                            {% endfor %}
+
+                                        </div>
+
+                                        <div class="col-4">
+                                            <button class="order_buttons" onclick="">View Order Details</button>
+                                            <br>
+                                            <button class="order_buttons" onclick="">Shipping Address</button>
+                                            <br>
+                                            <a class="order_buttons" href="/templates/product_page.html">Give Ratings</a>
+                                            <br>
+                                            <a class="order_buttons" href={{url_for('help')}}>Help on this Order</a>
+
+                                        </div>
+                                    {% else %}
+                                        You Does not have any order yet
+
+
+
+
+                                    {% endif %}
+
+
+
+
+
+                                </div>
+
+                                {{item['customer']}}
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+
+            </h4>
+        </div>
+    </div>
+
+</div>
+<style>
+    .example2{
+        display:block;
+        min-width:60%;
+        border:0.5px solid;
+        box-shadow:2px 4px;
+        margin-top:20px;
+        text-align:left;
+        min-height:60%;
+        padding:5px;
+    }
+    .item1{
+
+
+    }
+    .item_header{
+        background-color:#f6f6f6!important;
+        border: 1px #ddd solid;
+        min-height:50px;
+
+    }
+    .item_header_text{
+        margin:5px 5px 5px 5px;
+    }
+    .grid-left{
+        padding:8px;
+        font-weight:bold;
+    }
+    .a1{
+        max-width:50px;
+        max-height:50px;
+        margin-left:5px;
+    }
+    .main{
+
+    }
+    .grid-left{
+        max-width:30%;
+        flex:1;
+    }
+    .image1{
+        max-width:25%;
+    }
+    .grid-right{
+        float:right;
+        flex:33.33%;
+        max-width:50%;
+        margin-right:5px;
+        flex:1;
+    }
+    .row1{
+        display:flex;
+    }
+</style>
