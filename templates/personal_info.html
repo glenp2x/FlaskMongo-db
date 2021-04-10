@@ -1,41 +1,4 @@
 
-<div id="info_change">
-    <form class="box">
-        <form method="GET" action="/personal_info/">
-            <div class="title">
-                <h4>
-                    <span class="fas fa-user-circle"></span>
-                    <span>Personal Info</span>
-                    <div style="float:right; margin-right:60px; font-size:18px">
-                        <button onclick = "RenderRequestedPage({{url_for('change_info')}})" >Edit info</button>
-                    </div>
-
-                </h4>
-                <table style="border-collapse:separate;border-spacing:20px ;">
-
-                        <tr>
-                            <td>First Name :</td>
-                            <td>{{customers['first_name']}}</td>
-                        </tr>
-
-                        <tr>
-                            <td >Last Name :</td>
-                            <td >{{customers['last_name']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Email id :</td>
-                            <td>{{customers['email']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Phone :</td>
-                            <td>123456789</td>
-                        </tr>
-
-                </table>
-
-            </div>
-    </form>
-
-    </div>
+<div>
+    personal info
 </div>
-
