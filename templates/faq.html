@@ -1,0 +1,147 @@
+             {% extends 'header.html' %}
+{% block head %}
+{{ super() }}
+
+<link href = "https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+<link rel ="stylesheet" href="{{ url_for('static', filename='dist/css/stylesFAQ.css') }}">
+
+{% endblock head %}
+
+{% block content %}
+    <section class ="container">
+
+        <div class ="accordion">
+
+            <div class ="accordion-item" id="question1">
+                <a class ="accordion-link" href = "#question1" style = "text-decoration: none">
+
+                    How does the quality of the food that I order from PriceMart compare to what I can find at my local grocery store?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        You will find the quality of the products the exact same as your local grocery store.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question2">
+                <a class ="accordion-link" href = "#question2" style = "text-decoration: none">
+                    Can I trust PriceMart to pick my meat, produce and other fresh foods?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        Absolutely! We shop for your meats, produce and other fresh foods just as if you were shopping for yourselves. We pride ourselves on customer satisfaction and we believe that if you are not a satisfied client then you wont be a repeat client.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question3">
+                <a class ="accordion-link" href = "#question3" style = "text-decoration: none">
+                    What are your grocery shopping and delivery service fees?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        No shopping and delivery fees for groceries worth $15 or more.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question4">
+                <a class ="accordion-link" href = "#question4" style = "text-decoration: none">
+                    What are your shop and delivery hours?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        Monday through Saturday; 7am - 7pm.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question5">
+                <a class ="accordion-link" href = "#question5" style = "text-decoration: none">
+                    Do I need to be home to receive my grocery delivery?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        Someone must be home to receive your order. If you need to cancel or change your delivery time, you must call and speak with your PriceMart local store directly to make the change. You should call at least 2 hours before the scheduled delivery time.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question6">
+                <a class ="accordion-link" href = "#question6" style = "text-decoration: none">
+                    What if I am not happy with an item in my grocery shopping and delivery order?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        If you are dissatisfied with an item, you may return the item to the store with the grocery store receipt that is provided to you.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question7">
+                <a class ="accordion-link" href = "#question7" style = "text-decoration: none">
+                    Can I give a tip to the delivery person?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        Please do! If you are happy and satisfied with the service that was provided to you, a tip is always welcome and appreciated!
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question8">
+                <a class ="accordion-link" href = "#question8" style = "text-decoration: none">
+                    Can I shop and pay for another person?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        Yes, as long as the person for whom you are shopping lives within our Delivery Areas, you should be able to shop for them and have their groceries delivered.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class ="accordion-item" id="question9">
+                <a class ="accordion-link" href = "#question9" style = "text-decoration: none">
+                    Who can I contact with questions about my grocery shopping and delivery service?
+                    <i class ="icon ion-md-add"></i>
+                </a>
+                <div class ="answer">
+                    <p>
+                        You can call our Hotline on 1-800-123-3456, a Customer Service Representative will be happy to assist you.
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+    <script>
+        const faqs = document.querySelectorAll(".accordion");
+
+        faqs.forEach(accordion => {
+        accordion.addEventListener("click", () => {
+        accordion.classList.toggle("active");
+    });
+});
+    </script>
+
+{% endblock content %}
+
