@@ -8,7 +8,8 @@ from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime, timedelta
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm, \
+    ChangeAddress, ChangePersonalInfo
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -304,12 +305,18 @@ def product_page(selected):
 
 @app.route('/personal_info/')
 def personal_info():
-    return render_template('personal_info.html', title='Personal Information')
+
+    all_orders = mongo.db.orders
+    order = list(all_orders.find({'customer': session['email']}))
+    if all_orders.find({'customer': session['email']}):
+        order = all_orders.findOne({'customer': session['email']})
+
+    return render_template('personal_info.html', title='Personal Information',order=order)
 
 
 @app.route('/address_info/')
 def address_info():
-    return render_template('address_info.html', title='Address Information')
+
     form=ChangeAddress()
     all_orders = mongo.db.orders
     order = list(all_orders.find({'customer': session['email']}))
