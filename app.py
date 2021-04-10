@@ -1,3 +1,4 @@
+
 from flask import Flask, flash, render_template, redirect, url_for, session, request
 import flask_admin as admin
 from flask_admin.menu import MenuLink
@@ -7,7 +8,10 @@ from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime, timedelta
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm
+
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, ChangePersonalInfo,ChangeAddress, OrderForm, UsersForm
+
+
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -63,6 +67,8 @@ class MyHomeView(AdminIndexView):
                         chart2_labels.append(product["product_name"])
                         chart2_values.append(product["quantity"])
                         chart4_values.append(float(product["price"]) * int(product["quantity"]))
+
+
 
         no_of_products = mongo.db.products.find({}).count()
         no_of_orders = mongo.db.orders.find({}).count()
@@ -144,7 +150,6 @@ def method_not_allowed(e):
 def internal_server_error(e):
     return render_template("500.html", error=e)
 
-
 def revenue_last_x_days(start_days=7, end_days = 0):
     startDate = datetime.now() - timedelta(start_days)
     endDate = datetime.now() - timedelta(end_days)
@@ -171,6 +176,7 @@ def revenue_last_x_days(start_days=7, end_days = 0):
         ])
     )
     return x
+
 
 
 def promo_price(price, discount):
@@ -301,11 +307,22 @@ def product_page(selected):
 
 @app.route('/personal_info/')
 def personal_info():
-    return render_template('personal_info.html', title='Personal Information')
+    try:
+        customer_list = mongo.db.customers
+        all_customers=customer_list.find_one({'email': session['email']})
+        return render_template('personal_info.html', title='Personal Information', customers=all_customers)
+    except Exception as e:
+        return str(e)
 
 
-@app.route('/address_info/')
+@app.route('/address_info/', methods= ["GET","POST"])
 def address_info():
+    form=ChangeAddress()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            flash("Address information changed")
+        #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
+        return render_template('address_info_return.html', title='Address Information')
     return render_template('address_info.html', title='Address Information')
 
 
@@ -313,6 +330,43 @@ def address_info():
 def payment_info():
     return render_template('payment_info.html', title='Payment Information')
 
+
+@app.route('/order_history/')
+def order_history():
+    try:
+        all_orders = mongo.db.orders
+        all_products = mongo.db.products
+        order={}
+        products={}
+        item1=[]
+
+
+
+        if all_orders.find({'customer':session['email']}):
+            order = list(all_orders.find({'customer': session['email']}))
+            #order_items=order.items()
+
+            #for x in order:
+                #if 'ordered_products' in x:
+                    #for item in x['ordered_products']:
+                        #item1.append(item)
+
+        return render_template('includes/order_history.html', title='Order History', order=order, product=item1)
+
+
+
+
+
+
+
+    except Exception as e:
+        return str(e)
+
+
+
+@app.route('/products_suggestions/', methods= ["GET","POST"])
+def product_suggestion():
+    return render_template('includes/products_suggestions.html', title='Product Suggestions')
 
 @app.route('/change_password/', methods= ["GET","POST"])
 def change_password():
@@ -327,6 +381,33 @@ def change_password():
         return render_template('change_password.html', title='Change Password', form=form)
     except Exception as e:
         return str(e)
+
+
+@app.route('/personal_info_change/', methods= ["GET", "POST"])
+def change_info():
+    try:
+        form = ChangePersonalInfo()
+        if request.method == "GET":
+            return render_template('includes/personal_info_change.html', title='Edit Personal Info', form=form)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/address_change/', methods= ["GET", "POST"])
+def change_address():
+    try:
+        form = ChangeAddress()
+        if request.method == "GET":
+            return render_template('includes/address_change.html', title='Edit Address', form=form)
+    except Exception as e:
+        return str(e)
+
+
+
+@app.route('/address_info_return/', methods=["GET"])
+def address_info_return():
+    return render_template('address_info_return.html', title='Address information')
+
 
 
 @app.route('/my_account/')
@@ -356,14 +437,14 @@ def generate_page_list():
             "change_password")
          },
         {"name": "Order History", "url": url_for(
-            "payment_info")
+            "order_history")
          },
-        {"name": "Recommended For You", "url": url_for(
-            "payment_info")
-         },
-        {"name": "Ratings by you", "url": url_for(
-            "payment_info")
-         },
+        # {"name": "Recommended For You", "url": url_for(
+        #    "product_suggestion")
+        #  },
+        # {"name": "Ratings by you", "url": url_for(
+        #     "payment_info")
+         # },
     ]
     return pages
 
@@ -401,6 +482,7 @@ def add_product():
         if request.method == "POST":
             products_list = mongo.db.products
             product_name = form.product_name.data
+            product_desc = form.description.data
             barcode = form.barcode.data
             brand = form.brand.data
             price = form.price.data

@@ -46,6 +46,25 @@ class ChangePasswordForm(FlaskForm):
     submit = SubmitField("Change Password")
 
 
+class ChangePersonalInfo(FlaskForm):
+    firstName = StringField('First Name',validators=[DataRequired()])
+    middleName = StringField('Middle Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
+    emailId = StringField('Email Id',validators=[DataRequired()])
+    phoneNo = StringField('Phone No',validators=[DataRequired()])
+    submit=SubmitField("Save Changes")
+    cancel=SubmitField('Cancel')
+
+
+class ChangeAddress(FlaskForm):
+    name = StringField('name', validators=[DataRequired()])
+    addressLine= StringField('Address Line', validators=[DataRequired()])
+    city = StringField('city', validators=[DataRequired()])
+    postalCode = StringField('Postal Code', validators=[DataRequired()])
+    country= StringField('country', validators=[DataRequired()])
+    submit = SubmitField("Save Changes")
+    cancel = SubmitField("Cancel")
+
 class OrderForm(FlaskForm):
     card_number = StringField('Card Number', [DataRequired()])
     card_holder = StringField('Card Holder', [DataRequired()])
