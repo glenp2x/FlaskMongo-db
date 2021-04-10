@@ -83,12 +83,12 @@
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-question-circle"></i> Help
+                        <i class= "fas fa-question-circle" ></i> Help
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/store_locator"><i class="fas fa-map-marker-alt"></i> Store
                             locator</a>
-                        <a class="dropdown-item" href="/help/"><i class="fas fa-question-circle"></i> Help</a>
+                        <a class="dropdown-item" href="/help"><i class="fas fa-question-circle"></i> Help</a>
                     </div>
                 </div>
                 <div id="my_right_sidenav" class="right_sidenav">
@@ -119,7 +119,7 @@
                                         <td><img src="/static/images/ProductImages/{{ image }}"
                                                  class="cart-item-image"/></td>
                                         <td style="text-align:left;">{{ product_name }}</td>
-                                        <td style="text-align:right;"> {{ quantity }}</td>
+                                        <td style="text-align:right;">{{ quantity }}</td>
                                         <td style="text-align:right;">${{ price }}</td>
                                         <td style="text-align:right;">
                                             <a href="{{ url_for('.delete_product', barcode=session['cart_item'][key]['barcode']) }}">
@@ -181,6 +181,6 @@
 <!-- Required Js -->
 {% include 'includes/scripts.html' %}
 <!-- footer -->
-{% include 'includes/footer.html' %}
+
 </body>
 </html>

@@ -29,7 +29,7 @@ class AddProductForm(FlaskForm):
     discount = FloatField('Discount')
     description = TextAreaField('Description')
     image = FileField() #validators=[FileAllowed(image, 'Image only!'), FileRequired('File was empty!')]) #TextAreaField('Image')
-    submit = SubmitField('Add')
+    #submit = SubmitField('Add')
 
 
 class ChangePasswordForm(FlaskForm):
@@ -77,4 +77,13 @@ class OrderForm(FlaskForm):
     phone_number = StringField('Phone Number', [DataRequired()])
     recipient_email = StringField('Recipient Email', [DataRequired()])
     submit = SubmitField('Order')
+
+
+class UsersForm(FlaskForm):
+    username = StringField('User Name', [DataRequired()])
+    email = StringField('Email', [DataRequired()])
+    first_name = StringField('First Name', [DataRequired()])
+    active = BooleanField('Is Active?')
+    isAdmin = BooleanField('Is Admin?')
+    #accept_terms = BooleanField('I accept the Terms of Service and Privacy Notice', [DataRequired()])
 

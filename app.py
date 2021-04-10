@@ -2,19 +2,22 @@
 from flask import Flask, flash, render_template, redirect, url_for, session, request, render_template_string
 import flask_admin as admin
 from flask_admin.menu import MenuLink
+from flask_admin import expose, AdminIndexView
 from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
 import bcrypt
 import urllib
-from datetime import datetime
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, ChangePersonalInfo,ChangeAddress
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm
+
+from datetime import datetime, timedelta
+
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, ChangePersonalInfo,ChangeAddress, OrderForm, UsersForm
+
+
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
 from bson.objectid import ObjectId
 from flask_admin.menu import MenuLink
-
 import gc
 
 
@@ -30,20 +33,101 @@ app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote("Password@
 mongo = PyMongo(app)
 
 
+class MyHomeView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        last_x_days_orders = revenue_last_x_days(3,0)
+        past_x_days_orders = revenue_last_x_days(6,3)
+        chart1_labels = []
+        chart1_values = []
+        chart2_labels = []
+        chart2_values = []
+        chart3_values = []
+        chart4_values = []
+
+        for order in last_x_days_orders:
+            if "ordered_products" in order:
+                for product in order["ordered_products"]:
+                    if product["product_name"] in chart1_labels:
+                        ind = chart1_labels.index(product["product_name"])
+                        chart1_values[ind] = int(chart1_values[ind]) + int(product["quantity"])
+                        chart3_values[ind] = float(chart3_values[ind]) + float(float(product["price"]) * int(product["quantity"]))
+                    else:
+                        chart1_labels.append(product["product_name"])
+                        chart1_values.append(product["quantity"])
+                        chart3_values.append(float(product["price"]) * int(product["quantity"]))
+
+        for order in past_x_days_orders:
+            if "ordered_products" in order:
+                for product in order["ordered_products"]:
+                    if product["product_name"] in chart2_labels:
+                        ind = chart2_labels.index(product["product_name"])
+                        chart2_values[ind] = int(chart2_values[ind]) + int(product["quantity"])
+                        chart4_values[ind] = float(chart4_values[ind]) + float(float(product["price"]) * int(product["quantity"]))
+                    else:
+                        chart2_labels.append(product["product_name"])
+                        chart2_values.append(product["quantity"])
+                        chart4_values.append(float(product["price"]) * int(product["quantity"]))
+
+
+
+        no_of_products = mongo.db.products.find({}).count()
+        no_of_orders = mongo.db.orders.find({}).count()
+        no_of_users = mongo.db.customers.find({}).count()
+        current_revenue = sum(chart2_values)
+        past_revenue = sum(chart4_values)
+        sales_percentage = round(((current_revenue - past_revenue)/past_revenue),2)
+        total_no_of_products_sold = sum(chart1_values)
+
+        # highest_selling = mongo.db.orders.aggregate([
+        #     { '$match': {}},
+        #     { '$group': {'_id': "$ordered_products.product_name",
+        #                    'totalSales': { '$sum' : "$ordered_products.quantity" } } },
+        #     {'$unwind' : "$ordered_products.product_name"}
+        # ])
+
+
+        # for product in highest_selling:
+        #     chart2_labels.append(product["_id"])
+        #     chart2_values.append(product["totalSales"])
+        all_labels = list(set(chart1_labels) | set(chart2_labels))
+        for label in all_labels:
+            if label not in chart1_labels:
+                chart1_values.insert(all_labels.index(label),0)
+                chart3_values.insert(all_labels.index(label), 0)
+            if label not in chart2_labels:
+                chart2_values.insert(all_labels.index(label),0)
+                chart4_values.insert(all_labels.index(label), 0)
+        return self.render('admin/index.html', chart1_labels=all_labels, chart1_values=chart1_values,
+                           chart2_labels = all_labels, chart2_values = chart2_values,
+                           chart3_labels = all_labels, chart3_values = chart3_values,
+                           chart4_labels=all_labels, chart4_values=chart4_values,
+                           no_of_products=no_of_products,no_of_orders=no_of_orders,
+                           no_of_users=no_of_users, total_no_of_products_sold = total_no_of_products_sold,
+                           sales_percentage = sales_percentage)
+
+
 class ProductView(ModelView):
     column_list = ('product_name', 'category', 'description', 'size', 'barcode', 'brand', 'price', 'qty_in_stk', 'discount')
     form = AddProductForm
 
 
 class UserView(ModelView):
-    column_list = ('username', 'email', 'first_name', 'isAdmin', 'active')
-    form = CustomerSignupForm
+    column_list = ('username', 'email', 'first_name')
+    #form_edit_rules = ('password')
+    form = UsersForm
+
+class MainIndexLink(MenuLink):
+    def get_url(self):
+        return url_for("products")
 
 
-admin = admin.Admin(app, template_mode='bootstrap4')
+
+admin = admin.Admin(app, template_mode='bootstrap4',index_view=MyHomeView())
+admin.add_link(MainIndexLink(name="Main Page"))
 admin.add_view(ProductView(mongo.db.products))
 admin.add_view(UserView(mongo.db.customers))
-# admin.add_link(MenuLink(name='Public Website', category='', url=url_for('products.index')))
+#admin.add_link(MenuLink(name='Back to Products', url=url_for('main.products')))
 
 
 @app.context_processor
@@ -71,6 +155,34 @@ def method_not_allowed(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template("500.html", error=e)
+
+def revenue_last_x_days(start_days=7, end_days = 0):
+    startDate = datetime.now() - timedelta(start_days)
+    endDate = datetime.now() - timedelta(end_days)
+
+    x = (
+        mongo.db.orders.aggregate([
+        {
+            '$project': {
+            'order_date': {
+                '$dateFromString': {
+                    'dateString': '$order_date'
+                    }
+                },
+                'price':1,
+                'quantity':1,
+                'ordered_products':1
+            }
+        },
+        {
+            '$match': {
+                'order_date': {'$gte': startDate, '$lte': endDate}
+            }
+        }
+        ])
+    )
+    return x
+
 
 
 def promo_price(price, discount):
@@ -364,7 +476,7 @@ def product_list():
     try:
         products_list = mongo.db.products
         all_products = products_list.find({})
-        return render_template('admin/product_list.html', title='Product List',products=all_products)
+        return render_template('admin/product_list.html', title='Product List', products=all_products)
     except Exception as e:
         return str(e)
 
@@ -461,10 +573,63 @@ def add_product_to_cart():
         print(e)
 
 
+@app.route('/update_cart', methods=['POST'])
+def update_product_cart():
+    try:
+        products_list = mongo.db.products
+        quantity = int(request.form['quantity'])
+        barcode = request.form['barcode']
+
+        # validate the received values
+        if quantity and barcode and request.method == 'POST':
+            row = products_list.find_one({'barcode': barcode})
+
+            unit_price = float('{:,.2f}'.format(row['price'] - row['price'] * row['discount'] / 100))
+
+            itemArray = {
+
+                row['barcode']: {'product_name': row['product_name'], 'barcode': row['barcode'], 'quantity': quantity,
+                                 'price': unit_price, 'image': row['image'], 'total_price': quantity * unit_price}}
+
+            all_total_price = 0
+            all_total_quantity = 0
+
+            session.modified = True
+            if 'cart_item' in session:
+
+                if row['barcode'] in session['cart_item']:
+                    for key, value in session['cart_item'].items():
+                        if row['barcode'] == key:
+                            total_quantity = quantity
+                            session['cart_item'][key]['quantity'] = total_quantity
+                            session['cart_item'][key]['total_price'] = total_quantity * unit_price
+                else:
+                    session['cart_item'] = array_merge(session['cart_item'], itemArray)
+
+                for key, value in session['cart_item'].items():
+                    individual_quantity = int(session['cart_item'][key]['quantity'])
+                    individual_price = float(session['cart_item'][key]['total_price'])
+                    all_total_quantity = all_total_quantity + individual_quantity
+                    all_total_price = all_total_price + individual_price
+            else:
+                session['cart_item'] = itemArray
+                all_total_quantity = all_total_quantity + quantity
+                all_total_price = all_total_price + quantity * unit_price
+
+            session['all_total_quantity'] = all_total_quantity
+            session['all_total_price'] = all_total_price
+
+            flash("Cart Updated")
+            return redirect(request.referrer)
+        else:
+            return 'Error while adding item to cart'
+    except Exception as e:
+        print(e)
+
+
 @app.route('/empty')
 def empty_cart():
     try:
-        #session.clear()
         session.pop('cart_item')
         session.pop('all_total_quantity')
         session.pop('all_total_price')
@@ -520,7 +685,45 @@ def store_locator():
 
 @app.route('/help/')
 def help():
-    return render_template('help.html', title='Help')
+    return render_template('faq.html', title='Help')
+
+
+
+labels = [
+    'JAN', 'FEB', 'MAR', 'APR',
+    'MAY', 'JUN', 'JUL', 'AUG',
+    'SEP', 'OCT', 'NOV', 'DEC'
+]
+
+values = [
+    967.67, 1190.89, 1079.75, 1349.19,
+    2328.91, 2504.28, 2873.83, 4764.87,
+    4349.29, 6458.30, 9907, 16297
+]
+
+colors = [
+    "#F7464A", "#46BFBD", "#FDB45C", "#FEDCBA",
+    "#ABCDEF", "#DDDDDD", "#ABCABC", "#4169E1",
+    "#C71585", "#FF4500", "#FEDCBA", "#46BFBD"]
+
+
+@app.route('/bar_chart/')
+def bar_chart():
+    bar_labels = labels
+    bar_values = values
+    return render_template('bar_chart.html', title='Product Sales',max=17000, labels=bar_labels, values=bar_values)
+
+@app.route('/line_chart/')
+def line_chart():
+    line_labels = labels
+    line_values = values
+    return render_template('line_chart.html', title='Product Sales',max=17000, labels=line_labels, values=line_values)
+
+@app.route('/pie_chart/')
+def pie_chart():
+    pie_labels = labels
+    pie_values = values
+    return render_template('pie_chart.html', title='Product Sales',max=17000, set=zip(values, labels, colors))
 
 
 @app.route('/checkout/', methods=["GET", "POST"])
@@ -547,20 +750,15 @@ def checkout():
                 recipient_email = form.recipient_email.data
                 ordered_products = []
                 for value in session['cart_item'].items():
-                    product_in_cart = {}
-                    product_in_cart["barcode"] = value[1]["barcode"]
-                    product_in_cart["price"] = value[1]["price"]
-                    product_in_cart["quantity"] = value[1]["quantity"]
-                    product_in_cart["product_name"] = value[1]["product_name"]
+                    product_in_cart = {"barcode": value[1]["barcode"], "price": value[1]["price"],
+                                       "quantity": value[1]["quantity"], "product_name": value[1]["product_name"]}
                     ordered_products.append(product_in_cart)
-                    """product_dict[key] = value
-                    ordered_products= [session['cart_item'][key]['barcode']]"""
 
                 orders.insert_one({'card_number': hashed_card_number, 'card_holder': card_holder, 'cvc': hashed_cvc,
                                    'expires': expires, 'order_date': formatted_date, 'customer': customer,
                                    'name': name, 'address': address, 'city': city, 'post_code': post_code,
                                    'phone_number': phone_number, 'email': recipient_email,
-                                   'ordered_products': ordered_products })
+                                   'ordered_products': ordered_products})
                 flash("Order Confirmed! Check your email for details")
                 return redirect(url_for('products'))
 
@@ -572,6 +770,11 @@ def checkout():
 
     except Exception as e:
         return str(e)
+
+
+@app.route('/test/')
+def test():
+    return render_template('test.html', title='Test')
 
 
 if __name__ == "__main__":
