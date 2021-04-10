@@ -4,15 +4,18 @@
   padding: 0;
 }
 
+
 html{
   height: 100%;
 }
+
 
 body{
 	font-family: Arial;
   background: #F8F8F8;
   color: #333333;
 }
+
 
 h1, h2, h3, h4, h5, h6
 {
@@ -174,6 +177,7 @@ h1, h2, h3, h4, h5, h6
   padding-left: 10px;
 
 }
+
 
 #btnEmpty
 {
@@ -375,7 +379,7 @@ h1, h2, h3, h4, h5, h6
 .site-color
 {
   color: #19DA4A;
-  font-family: 'Kaushan Script', cursive;
+  font-family:'Kaushan Script', cursive;
   font-size: 25px;
 }
 
@@ -681,4 +685,3 @@ table.table .avatar {
 .modal form label {
     font-weight: normal;
 }
-
