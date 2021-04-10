@@ -1,28 +1,29 @@
 {% extends 'header.html' %}
 
 {% block content %}
+<div style="font-family: 'Poppins'; sans-serif" >
     <section id = "banner">
         <div class= "banner-text">
-            <h1> PriceMart</h1>
+            <h1> Price Mart</h1>
             <p>Feed your family the best, while spending less!</p>
             <div class ="banner-btn">
                 <a href ="#promo"><span></span>Products On Sale</a>
                 <a href="{{ url_for('products') }}"><span></span>Shop Now</a>
-            <br>
-            <br>
-            <h3>We Deliver Free Anywhere in Toronto with a minimum order worth CAD 15</h3>
+                <br>
+                <br>
+                <h3 style="color:white">We Deliver Free Anywhere in Toronto with a minimum order worth CAD 15</h3>
             </div>
         </div>
     </section>
     <div id ="sideNav" class = "topgap">
         <nav>
-        <ul>
-            <li><a href="#banner">HOME</a></li>
-            <li><a href="#promo">DEALS AND PROMOTIONS</a></li>
-            <li><a href="#delivery">DELIVERY TERMS</a></li>
-            <li><a href="#feature">ABOUT US</a></li>
-            <li><a href="#footer">CONTACT US</a></li>
-        </ul>
+            <ul>
+                <li><a href="#banner">HOME</a></li>
+                <li><a href="#promo">SALES AND PROMOTIONS</a></li>
+                <li><a href="#delivery">DELIVERY TERMS</a></li>
+                <li><a href="#feature">ABOUT THE COMPANY</a></li>
+                <li><a href="#footer">CONTACT US</a></li>
+            </ul>
         </nav>
     </div>
     <div id = "menuBtn" class = "topgap">
@@ -32,33 +33,29 @@
     <section>
         <div id ="promo">
             <div class = "title-text">
-                <p>DEALS AND PROMOTIONS</p>
-                <h1>Products On Sale</h1>
+                <p>SALES AND PROMOTIONS</p>
+                <h1>PRODUCTS ON SALE</h1>
             </div>
             <div class ="promo-row">
                 {% for product in products %}
 
-                <div class = "promo-col">
+                <div class="col-lg-6 col-md-6 col-6">
                     <form method="POST" action="/add">
                     <div class ="user">
                         <img src = "/static/images/ProductImages/{{ product['image'] }}">
                         <div class = "user-info">
                             <input type="hidden" name="barcode" value="{{ product['barcode'] }}"/>
                             <input type="hidden" name="price" value="{{ product['price'] }}"/>
-
-                            <h6>Normal Price: ${{ product['price'] }}</h6>
-
-                            <h3>Promo Price: ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</h3>
+                            <input type="number" name="quantity" value="1" min="1" max="{{ product['qty_in_stk'] }}"/>
+                            <input type="submit" value="Add" class=" btn-sm btn-info" />
                             <br>
-                            <input type="hidden" name = "quantity" value="1"/>
-                            <input type="submit" value="Add to Cart" class=" btn btn-info"/>
+                            <br>
+                            <s><h6 style="font-weight: 600;">Normal Price: ${{ product['price'] }}</h6></s>
+                            <h5 class="red" style="font-weight: bold;">Promo Price: ${{ '{:,.2f}'.format(product['price'] - (product['price'] * product['discount']/100))  }}</h5>
+                            <br>
                         </div>
-
                     </div>
-
-                        <h5><u>{{product['product_name']}} {{product['size']}}</u></h5>
-                        <h8><i>{{product['description']}}</i></h8>
-
+                    <h4 style="font-weight: 600;">{{product['product_name']}}, {{product['size']}}</h4>
                     </form>
                 </div>
                 {% endfor %}
@@ -67,69 +64,53 @@
     </section>
     <section id ="delivery">
         <div class = "title-text">
-            <p>DELIVERY</p>
-            <h1>Terms and Conditions</h1>
-        </div>
-              <div class ="delivery-boxText">
-                  <div class ="delivery-terms">
-                      <p>1. Free delivery anywhere in Toronto with a minimum order worth CAD 15. </p>
-                      <p>2. We are at your doorstep within 3 hours after check out!</p>
-                      <p>3. Someone must be home to receive your order. If you need to cancel or change your delivery time, you <br>
-                            must call and speak with your PriceMart local store directly to make the change. You should call at <br>
-                            least 2 hours before the scheduled delivery time.</p>
-                  </div>
+            <p>DELIVERY TERMS </p>
+            <h2>We Deliver Free Anywhere in Toronto</h2>
+            <h2>We are at your doorstep within 3 hours after check out!</h2>
+            <h4>(Minimum order: CAD 15)</h4>
         </div>
         <div class = "delivery-box">
             <div class ="single-delivery">
                 <img src ="/static/images/deliveryfree.jpg">
                 <div class ="overlay"></div>
-                <div class="delivery-desc">
-                </div>
-
-</section>
- <section id ="feature">
-    <div class = "title-text">
-        <p>ABOUT THE COMPANY</p>
-        <h1>PriceMart </h1>
-    </div>
-    <div class = "feature-box">
-        <div class ="features">
-            <h4>OUR COMPANY</h4>
-            <div class="features-desc">
-                <div class ="feature-icon">
-                    <i class="fa fa-building-o"></i>
-                </div>
-                <div class ="feature-text">
-                    <p>PriceMart Inc. was established on January 2, 1996. Twenty-five years into the industry,
-                        PriceMart has grown into a strong, friendly, and most trusted grocery store in Toronto.<br>
-                        We understand that our customers have the right to good food and drinks, that is why we are
-                        committed to providing only the best quality of our products for everyone.<br>
-                        In 2020, PriceMart had garnered two major awards as one of the <br>
-                        Greater Toronto’s Top Employers and Outstanding Philanthropist of the Year.</p>
-                </div>
+                <div class="delivery-desc"></div>
             </div>
-            <h4>OUR AIM</h4>
-            <div class="features-desc">
-                <div class ="feature-icon">
-                    <i class="fa fa-bullseye"></i>
+        </div>
+    </section>
+     <section id ="feature">
+        <div class = "title-text">
+            <p>ABOUT THE COMPANY</p>
+            <h2 class="cursive">Price Mart </h2>
+        </div>
+        <div class = "feature-box">
+            <div class ="features">
+                <h1>OUR COMPANY</h1>
+                <div class="features-desc">
+                    <div class ="feature-icon">
+                        <i class="fa fa-building-o"></i>
+                    </div>
+                    <div class ="feature-text">
+                        <p>We are promising the customers to provide quality products.</p>
+                    </div>
                 </div>
-                <div class ="feature-text">
-                    <p> We want to offer you the best online shopping experience. Here at PriceMart, we always aim to give our
-                        customers what they deserve: convenience, quality, affordability, and everything in-between. </p>
+                <h1>OUR AIM</h1>
+                <div class="features-desc">
+                    <div class ="feature-icon">
+                        <i class="fa fa-bullseye"></i>
+                    </div>
+                    <div class ="feature-text">
+                        <p> We are providing fresh products and always helping people to get their delivery in quickest way.</p>
+                        <p> Excellent Customer Service </p>
+                    </div>
+                </div>
 
-                </div>
             </div>
-
+            <div class ="features-img">
+                <img src = "/static/images/store.jpg">
+            </div>
         </div>
-        <div class ="features-img">
-            <img src = "/static/images/store.jpg">
-        </div>
-    </div>
-</section>
-
-{% include 'includes/footer.html' %}
-
-</section>
+    </section>
+</div>
 
 
     <script>
@@ -146,11 +127,10 @@
             menu.src ="/static/images/menu.png";
         }
     }
-var scroll = new SmoothScroll('a[href*="#"]', {
-speed: 1000,
-speedAsDuration: true
-});
-</script>
-    </section>
+    var scroll = new SmoothScroll('a[href*="#"]', {
+    speed: 1000,
+    speedAsDuration: true
+    });
+    </script>
 {% endblock content %}
 
