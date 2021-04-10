@@ -536,9 +536,15 @@ def checkout():
         return str(e)
 
 
-@app.route('/test/')
-def test():
-    return render_template('test.html', title='Test')
+@app.route('/category/<selected>', methods=['GET'])
+def category(selected):
+    try:
+        products_list = mongo.db.products
+        all_products = products_list.find({"category": selected})
+        all_categories = products_list.distinct("category")
+        return render_template('products.html', title='Products', products=all_products, categories=all_categories)
+    except Exception as e:
+        return str(e)
 
 
 if __name__ == "__main__":

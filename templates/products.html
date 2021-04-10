@@ -16,7 +16,7 @@
                 <div class="bread-inner">
                     <ul class="bread-list">
                         <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
-                        <li class="active"><a href="blog-single.html">Products</a></li>
+                        <li class="active"><a href="/products">Products</a></li>
                     </ul>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                         <ul class="categor-list">
                             {% for category in categories %}
                             {% if category %}
-                            <li><a href="#">{{category}}</a></li>
+                            <li><a href="/category/{{ category }}">{{category}}</a></li>
                             {% endif %}
                             {% endfor %}
                         </ul>
