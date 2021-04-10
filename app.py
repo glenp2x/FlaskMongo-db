@@ -9,11 +9,7 @@ import bcrypt
 import urllib
 
 from datetime import datetime, timedelta
-
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm
-
-
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, AddProductFromAdminForm, ChangePasswordForm, OrderForm, UsersForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, AddProductFromAdminForm, ChangePasswordForm, OrderForm, UsersForm, ChangeAddress, ChangePersonalInfo
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
