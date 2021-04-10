@@ -1,4 +1,5 @@
-
+{% extends 'header.html' %}
+{% block content %}
 <div class="container topgap">
 	<div class="content-section">
 		<form method="POST" action="/add_product/" enctype="multipart/form-data">
@@ -51,5 +52,6 @@
 		</small>
 	</div>
 </div>
+{% endblock %}
 
 
