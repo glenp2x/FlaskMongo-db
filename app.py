@@ -8,7 +8,7 @@ from flask_pymongo import PyMongo
 import bcrypt
 import urllib
 from datetime import datetime, timedelta
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -109,8 +109,9 @@ class ProductView(ModelView):
 
 
 class UserView(ModelView):
-    column_list = ('username', 'email', 'first_name', 'isAdmin', 'active')
-    form = CustomerSignupForm
+    column_list = ('username', 'email', 'first_name')
+    #form_edit_rules = ('password')
+    form = UsersForm
 
 
 admin = admin.Admin(app, template_mode='bootstrap4',index_view=MyHomeView())
