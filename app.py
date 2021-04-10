@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 
 from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, AddProductFromAdminForm, ChangePasswordForm, OrderForm, UsersForm, ChangeAddress, ChangePersonalInfo
 
+
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -315,38 +316,37 @@ def personal_info():
     try:
         customer_list = mongo.db.customers
         all_customers=customer_list.find_one({'email': session['email']})
-        return render_template('personal_info.html', title='Personal Information', customers=all_customers)
+        all_orders = mongo.db.orders
+        order = all_orders.find_one({'customer': session['email']})
+        return render_template('personal_info.html', title='Personal Information', customers=all_customers,order=order)
     except Exception as e:
         return str(e)
 
-    all_orders = mongo.db.orders
-    order = all_orders.find_one({'customer': session['email']})
+
     # if all_orders.findOne({'customer': session['email']}):
     #     order = all_orders.find({'customer': session['email']})
 
-    return render_template('personal_info.html', title='Personal Information',order=order)
+
 
 
 @app.route('/address_info/', methods= ["GET","POST"])
 def address_info():
     form=ChangeAddress()
-    if request.method == "POST":
-        if form.validate_on_submit():
-            flash("Address information changed")
-        #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
-        return render_template('address_info_return.html', title='Address Information')
-    return render_template('address_info.html', title='Address Information')
-
-    form=ChangeAddress()
     all_orders = mongo.db.orders
     order = all_orders.find_one({'customer': session['email']})
     if request.method == "POST":
         if form.validate_on_submit():
             flash("Address information changed")
         #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
-
         return render_template('address_info_return.html', title='Address Information',order=order)
     return render_template('address_info.html', title='Address Information',order=order)
+
+
+
+
+        #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
+
+
 
 
 
@@ -409,14 +409,7 @@ def change_password():
         return str(e)
 
 
-@app.route('/personal_info_change/', methods= ["GET", "POST"])
-def change_info():
-    try:
-        form = ChangePersonalInfo()
-        if request.method == "GET":
-            return render_template('includes/personal_info_change.html', title='Edit Personal Info', form=form)
-    except Exception as e:
-        return str(e)
+
 
 
 @app.route('/address_change/', methods= ["GET", "POST"])
@@ -446,14 +439,7 @@ def change_info():
         return str(e)
 
 
-@app.route('/address_change/', methods= ["GET", "POST"])
-def change_address():
-    try:
-        form = ChangeAddress()
-        if request.method == "GET":
-            return render_template('includes/address_change.html', title='Edit Address', form=form)
-    except Exception as e:
-        return str(e)
+
 
 
 @app.route('/shipping_info/',methods=["GET"])
@@ -464,9 +450,7 @@ def shipping_info():
     return render_template('includes/shipping_info.html', title='Order History', order=order)
 
 
-@app.route('/address_info_return/', methods=["GET"])
-def address_info_return():
-    return render_template('address_info_return.html', title='Address information')
+
 
 
 
