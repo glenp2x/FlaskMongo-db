@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, TextAreaField, IntegerField, DateTimeField
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms import validators
@@ -29,7 +29,7 @@ class AddProductForm(FlaskForm):
     discount = FloatField('Discount')
     description = TextAreaField('Description')
     image = FileField() #validators=[FileAllowed(image, 'Image only!'), FileRequired('File was empty!')]) #TextAreaField('Image')
-    submit = SubmitField('Add')
+    #submit = SubmitField('Add')
 
 
 class ChangePasswordForm(FlaskForm):
@@ -44,3 +44,27 @@ class ChangePasswordForm(FlaskForm):
         validators=[DataRequired(message='*Required'),
         EqualTo('new_password', message='Both password fields must be equal!')])
     submit = SubmitField("Change Password")
+
+
+class OrderForm(FlaskForm):
+    card_number = StringField('Card Number', [DataRequired()])
+    card_holder = StringField('Card Holder', [DataRequired()])
+    expires = DateTimeField('Expires', [DataRequired()])
+    cvc = StringField('CVC', [DataRequired()])
+    name = StringField('Full Name', [DataRequired()])
+    address = TextAreaField('Address', [DataRequired()])
+    city = StringField('City', [DataRequired()])
+    post_code = StringField('Post code', [DataRequired()])
+    phone_number = StringField('Phone Number', [DataRequired()])
+    recipient_email = StringField('Recipient Email', [DataRequired()])
+    submit = SubmitField('Order')
+
+
+class UsersForm(FlaskForm):
+    username = StringField('User Name', [DataRequired()])
+    email = StringField('Email', [DataRequired()])
+    first_name = StringField('First Name', [DataRequired()])
+    active = BooleanField('Is Active?')
+    isAdmin = BooleanField('Is Admin?')
+    accept_terms = BooleanField('I accept the Terms of Service and Privacy Notice', [DataRequired()])
+
