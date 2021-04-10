@@ -2,8 +2,6 @@
 *{
     margin:0;
     padding: 0;
-    /*font-family: 'Poppins';, sans-serif*/
-
 }
 #banner{
     background: linear-gradient(rgba(0,0,0,0.15), #7e8494),url("../images/homepic1.jpg");
@@ -91,6 +89,7 @@ nav ul li{
 nav ul li a{
     text-decoration: none;
     color:  rgba(255, 255, 255, 0.781);
+    font-size: 15px;
 }
 nav ul li a:hover{
     color: #fff;
@@ -239,8 +238,13 @@ nav ul li a:hover{
     justify-content: space-around;
     margin:auto;
 }
+
+.delivery-boxText{
+    margin-left: 420px;
+    width: 50%;
+}
 .single-delivery{
-    flex-basis:48%;
+    flex-basis:50%;
     text-align: center;
     border-radius: 7px;
     margin-bottom: 20px;
@@ -250,6 +254,7 @@ nav ul li a:hover{
 .single-delivery img{
     width: 100%;
     border-radius: 7px;
+    margin-top:25px;
 
 }
 
