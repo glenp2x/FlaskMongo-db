@@ -10,7 +10,7 @@ import urllib
 
 from datetime import datetime, timedelta
 
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, ChangePersonalInfo,ChangeAddress, OrderForm, UsersForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm
 
 
 from flask_mongoengine import MongoEngine
