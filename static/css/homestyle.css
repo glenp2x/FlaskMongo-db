@@ -2,6 +2,7 @@
 *{
     margin:0;
     padding: 0;
+
 }
 #banner{
     background: linear-gradient(rgba(0,0,0,0.15), #7e8494),url("../images/homepic1.jpg");
@@ -9,6 +10,14 @@
     background-position: center;
     height: 100vh;
 
+}
+.logo{
+    width: 140px;
+    position:absolute;
+    top: 4%;
+    left:10%;
+    width:60px;
+    height:60px;
 }
 .banner-text{
     text-align: center;
@@ -20,15 +29,9 @@
 .banner-text h1{
     font-size: 70px;
     font-family: 'Kaushan Script', cursive;
-    color: white;
-}
-.banner-text h3{
-    font-size: 20px;
-    font-family: 'Kaushan Script', cursive;
-    color: white;
 }
 
-}
+
 .banner-text p{
     font-size: 18px;
     font-style: italic;
@@ -50,7 +53,6 @@
     transition: color 0.5s;
     visibility: visible;
     font-weight: 800;
-    font-size: 13px;
 
 }
 .banner-btn a span{
@@ -59,7 +61,7 @@
     position: absolute;
     top: 0;
     left:0;
-    background: #27c0ff;
+    background: #fff;
     z-index: -1;
     transition: 0.5s;
     visibility: visible;
@@ -88,10 +90,6 @@ nav ul li{
 }
 nav ul li a{
     text-decoration: none;
-    color:  rgba(255, 255, 255, 0.781);
-    font-size: 15px;
-}
-nav ul li a:hover{
     color: #fff;
 }
 #menuBtn{
@@ -155,7 +153,12 @@ nav ul li a:hover{
 }
 .title-text h1{
     font-size: 30px;
-    font-family: 'Kaushan Script';
+}
+
+.title-text .cursive{
+    font-size: 50px;
+    font-family: 'Kaushan Script', cursive;
+
 }
 
 .feature-box{
@@ -179,13 +182,13 @@ nav ul li a:hover{
     border-radius: 10px;
 
 }
-.features h4{
-    text-align: initial;
+.features h1{
+    text-align: left;
     margin-bottom: 10px;
     font-weight: 100;
     color: #009688;
     visibility: visible;
-
+    font-weight: 800;
 }
 .features-desc{
     display: flex;
@@ -206,7 +209,7 @@ nav ul li a:hover{
     padding: 0 20px;
     text-align: initial;
     visibility: visible;
-
+    font-weight: 800;
 
 }
 @media screen and (max-width: 770px){
@@ -238,13 +241,8 @@ nav ul li a:hover{
     justify-content: space-around;
     margin:auto;
 }
-
-.delivery-boxText{
-    margin-left: 420px;
-    width: 50%;
-}
 .single-delivery{
-    flex-basis:50%;
+    flex-basis:48%;
     text-align: center;
     border-radius: 7px;
     margin-bottom: 20px;
@@ -254,7 +252,6 @@ nav ul li a:hover{
 .single-delivery img{
     width: 100%;
     border-radius: 7px;
-    margin-top:25px;
 
 }
 
@@ -332,13 +329,8 @@ hr{
     color: #27c0ff;
     font-size: 20px;
 }
-.user-info h3{
+.user-info .red{
     color: #ec0f0f;
-    font-size: 20px;
-
-}
-.user-info h5{
-    font-size: 20px;
 
 }
 .promo-col:hover{
@@ -382,13 +374,11 @@ hr{
     line-height: 35px;
     visibility: visible;
     font-weight: 800;
-
 }
 .footer-left .fa,.footer-right .fa{
-    font-size: 18px;
+    font-size: 20px;
     color: #009688;
     margin: 10px;
-
 }
 .social-links{
     text-align: center;
@@ -434,8 +424,4 @@ a.cart .cart-basket {
     color: #ffffff;
     background-color: #979ad6de;
     border-radius: 50%;
-}
-.example1{
-
-
 }
