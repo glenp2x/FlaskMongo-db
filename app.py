@@ -13,7 +13,6 @@ from werkzeug.utils import secure_filename
 import mongoengine as me
 from bson.objectid import ObjectId
 from flask_admin.menu import MenuLink
-
 import gc
 
 
@@ -280,7 +279,7 @@ def product_list():
     try:
         products_list = mongo.db.products
         all_products = products_list.find({})
-        return render_template('admin/product_list.html', title='Product List',products=all_products)
+        return render_template('admin/product_list.html', title='Product List', products=all_products)
     except Exception as e:
         return str(e)
 
@@ -376,10 +375,63 @@ def add_product_to_cart():
         print(e)
 
 
+@app.route('/update_cart', methods=['POST'])
+def update_product_cart():
+    try:
+        products_list = mongo.db.products
+        quantity = int(request.form['quantity'])
+        barcode = request.form['barcode']
+
+        # validate the received values
+        if quantity and barcode and request.method == 'POST':
+            row = products_list.find_one({'barcode': barcode})
+
+            unit_price = float('{:,.2f}'.format(row['price'] - row['price'] * row['discount'] / 100))
+
+            itemArray = {
+
+                row['barcode']: {'product_name': row['product_name'], 'barcode': row['barcode'], 'quantity': quantity,
+                                 'price': unit_price, 'image': row['image'], 'total_price': quantity * unit_price}}
+
+            all_total_price = 0
+            all_total_quantity = 0
+
+            session.modified = True
+            if 'cart_item' in session:
+
+                if row['barcode'] in session['cart_item']:
+                    for key, value in session['cart_item'].items():
+                        if row['barcode'] == key:
+                            total_quantity = quantity
+                            session['cart_item'][key]['quantity'] = total_quantity
+                            session['cart_item'][key]['total_price'] = total_quantity * unit_price
+                else:
+                    session['cart_item'] = array_merge(session['cart_item'], itemArray)
+
+                for key, value in session['cart_item'].items():
+                    individual_quantity = int(session['cart_item'][key]['quantity'])
+                    individual_price = float(session['cart_item'][key]['total_price'])
+                    all_total_quantity = all_total_quantity + individual_quantity
+                    all_total_price = all_total_price + individual_price
+            else:
+                session['cart_item'] = itemArray
+                all_total_quantity = all_total_quantity + quantity
+                all_total_price = all_total_price + quantity * unit_price
+
+            session['all_total_quantity'] = all_total_quantity
+            session['all_total_price'] = all_total_price
+
+            flash("Cart Updated")
+            return redirect(request.referrer)
+        else:
+            return 'Error while adding item to cart'
+    except Exception as e:
+        print(e)
+
+
 @app.route('/empty')
 def empty_cart():
     try:
-        #session.clear()
         session.pop('cart_item')
         session.pop('all_total_quantity')
         session.pop('all_total_price')
@@ -462,20 +514,15 @@ def checkout():
                 recipient_email = form.recipient_email.data
                 ordered_products = []
                 for value in session['cart_item'].items():
-                    product_in_cart = {}
-                    product_in_cart["barcode"] = value[1]["barcode"]
-                    product_in_cart["price"] = value[1]["price"]
-                    product_in_cart["quantity"] = value[1]["quantity"]
-                    product_in_cart["product_name"] = value[1]["product_name"]
+                    product_in_cart = {"barcode": value[1]["barcode"], "price": value[1]["price"],
+                                       "quantity": value[1]["quantity"], "product_name": value[1]["product_name"]}
                     ordered_products.append(product_in_cart)
-                    """product_dict[key] = value
-                    ordered_products= [session['cart_item'][key]['barcode']]"""
 
                 orders.insert_one({'card_number': hashed_card_number, 'card_holder': card_holder, 'cvc': hashed_cvc,
                                    'expires': expires, 'order_date': formatted_date, 'customer': customer,
                                    'name': name, 'address': address, 'city': city, 'post_code': post_code,
                                    'phone_number': phone_number, 'email': recipient_email,
-                                   'ordered_products': ordered_products })
+                                   'ordered_products': ordered_products})
                 flash("Order Confirmed! Check your email for details")
                 return redirect(url_for('products'))
 
@@ -487,6 +534,11 @@ def checkout():
 
     except Exception as e:
         return str(e)
+
+
+@app.route('/test/')
+def test():
+    return render_template('test.html', title='Test')
 
 
 if __name__ == "__main__":
