@@ -29,6 +29,17 @@ class AddProductForm(FlaskForm):
     discount = FloatField('Discount')
     description = TextAreaField('Description')
     image = FileField() #validators=[FileAllowed(image, 'Image only!'), FileRequired('File was empty!')]) #TextAreaField('Image')
+    submit = SubmitField('Add')
+
+class AddProductFromAdminForm(FlaskForm):
+    product_name = StringField('Product', [DataRequired()])
+    barcode = StringField('Barcode')
+    brand = StringField('Brand')
+    size = StringField('Size')
+    price = FloatField('Price')
+    discount = FloatField('Discount')
+    description = TextAreaField('Description')
+    image = FileField() #validators=[FileAllowed(image, 'Image only!'), FileRequired('File was empty!')]) #TextAreaField('Image')
     #submit = SubmitField('Add')
 
 

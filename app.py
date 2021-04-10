@@ -10,11 +10,8 @@ import urllib
 
 from datetime import datetime, timedelta
 
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm
+from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, AddProductFromAdminForm, ChangePasswordForm, OrderForm, UsersForm, ChangeAddress, ChangePersonalInfo
 
-
-from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm, UsersForm, \
-    ChangeAddress, ChangePersonalInfo
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
 import mongoengine as me
@@ -111,7 +108,7 @@ class MyHomeView(AdminIndexView):
 
 class ProductView(ModelView):
     column_list = ('product_name', 'category', 'description', 'size', 'barcode', 'brand', 'price', 'qty_in_stk', 'discount')
-    form = AddProductForm
+    form = AddProductFromAdminForm
 
 
 class UserView(ModelView):
@@ -566,7 +563,7 @@ def add_product():
             flash(product_name + " added!")
             return redirect(url_for('products'))
 
-        return render_template('add_product.html', title='Add Product', form=form)
+        return render_template('admin/add_product.html', title='Add Product', form=form)
 
     except Exception as e:
         return str(e)
