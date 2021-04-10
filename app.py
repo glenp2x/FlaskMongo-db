@@ -1,5 +1,5 @@
 
-from flask import Flask, flash, render_template, redirect, url_for, session, request
+from flask import Flask, flash, render_template, redirect, url_for, session, request, render_template_string
 import flask_admin as admin
 from flask_admin.menu import MenuLink
 from flask_admin import expose, AdminIndexView
@@ -7,6 +7,7 @@ from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
 import bcrypt
 import urllib
+
 from datetime import datetime, timedelta
 
 from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, ChangePersonalInfo,ChangeAddress, OrderForm, UsersForm
@@ -131,9 +132,14 @@ admin.add_view(UserView(mongo.db.customers))
 
 @app.context_processor
 def utility_processor():
+
     def isAdmin():
         return True if 'isAdmin' in session and session["isAdmin"] == "1" else False
     return dict(isAdmin=isAdmin)
+
+
+
+
 
 
 @app.errorhandler(404)
@@ -324,6 +330,9 @@ def address_info():
         #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
         return render_template('address_info_return.html', title='Address Information')
     return render_template('address_info.html', title='Address Information')
+
+
+
 
 
 @app.route('/payment_info/')
