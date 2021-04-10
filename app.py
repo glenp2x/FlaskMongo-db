@@ -307,9 +307,9 @@ def product_page(selected):
 def personal_info():
 
     all_orders = mongo.db.orders
-    order = list(all_orders.find({'customer': session['email']}))
-    if all_orders.find({'customer': session['email']}):
-        order = all_orders.findOne({'customer': session['email']})
+    order = all_orders.find_one({'customer': session['email']})
+    # if all_orders.findOne({'customer': session['email']}):
+    #     order = all_orders.find({'customer': session['email']})
 
     return render_template('personal_info.html', title='Personal Information',order=order)
 
@@ -319,13 +319,11 @@ def address_info():
 
     form=ChangeAddress()
     all_orders = mongo.db.orders
-    order = list(all_orders.find({'customer': session['email']}))
+    order = all_orders.find_one({'customer': session['email']})
     if request.method == "POST":
         if form.validate_on_submit():
             flash("Address information changed")
         #tpl1 = render_template_string("{% extends 'my_account.html' %}", content="name")
-        if all_orders.find({'customer': session['email']}):
-            order = all_orders.findOne({'customer': session['email']})
 
         return render_template('address_info_return.html', title='Address Information',order=order)
     return render_template('address_info.html', title='Address Information',order=order)
