@@ -597,7 +597,7 @@ def store_locator():
 
 @app.route('/help/')
 def help():
-    return render_template('help.html', title='Help')
+    return render_template('faq.html', title='Help')
 
 
 @app.route('/checkout/', methods=["GET", "POST"])
