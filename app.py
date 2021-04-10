@@ -2,11 +2,12 @@
 from flask import Flask, flash, render_template, redirect, url_for, session, request
 import flask_admin as admin
 from flask_admin.menu import MenuLink
+from flask_admin import expose, AdminIndexView
 from flask_admin.contrib.pymongo import ModelView
 from flask_pymongo import PyMongo
 import bcrypt
 import urllib
-from datetime import datetime
+from datetime import datetime, timedelta
 from forms import CustomerSignupForm, CustomerLoginForm, AddProductForm, ChangePasswordForm, OrderForm
 from flask_mongoengine import MongoEngine
 from werkzeug.utils import secure_filename
@@ -28,6 +29,80 @@ app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote("Password@
 mongo = PyMongo(app)
 
 
+class MyHomeView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        last_x_days_orders = revenue_last_x_days(3,0)
+        past_x_days_orders = revenue_last_x_days(6,3)
+        chart1_labels = []
+        chart1_values = []
+        chart2_labels = []
+        chart2_values = []
+        chart3_values = []
+        chart4_values = []
+
+        for order in last_x_days_orders:
+            if "ordered_products" in order:
+                for product in order["ordered_products"]:
+                    if product["product_name"] in chart1_labels:
+                        ind = chart1_labels.index(product["product_name"])
+                        chart1_values[ind] = int(chart1_values[ind]) + int(product["quantity"])
+                        chart3_values[ind] = float(chart3_values[ind]) + float(float(product["price"]) * int(product["quantity"]))
+                    else:
+                        chart1_labels.append(product["product_name"])
+                        chart1_values.append(product["quantity"])
+                        chart3_values.append(float(product["price"]) * int(product["quantity"]))
+
+        for order in past_x_days_orders:
+            if "ordered_products" in order:
+                for product in order["ordered_products"]:
+                    if product["product_name"] in chart2_labels:
+                        ind = chart2_labels.index(product["product_name"])
+                        chart2_values[ind] = int(chart2_values[ind]) + int(product["quantity"])
+                        chart4_values[ind] = float(chart4_values[ind]) + float(float(product["price"]) * int(product["quantity"]))
+                    else:
+                        chart2_labels.append(product["product_name"])
+                        chart2_values.append(product["quantity"])
+                        chart4_values.append(float(product["price"]) * int(product["quantity"]))
+
+
+
+        no_of_products = mongo.db.products.find({}).count()
+        no_of_orders = mongo.db.orders.find({}).count()
+        no_of_users = mongo.db.customers.find({}).count()
+        current_revenue = sum(chart2_values)
+        past_revenue = sum(chart4_values)
+        sales_percentage = round(((current_revenue - past_revenue)/past_revenue),2)
+        total_no_of_products_sold = sum(chart1_values)
+
+        # highest_selling = mongo.db.orders.aggregate([
+        #     { '$match': {}},
+        #     { '$group': {'_id': "$ordered_products.product_name",
+        #                    'totalSales': { '$sum' : "$ordered_products.quantity" } } },
+        #     {'$unwind' : "$ordered_products.product_name"}
+        # ])
+
+
+        # for product in highest_selling:
+        #     chart2_labels.append(product["_id"])
+        #     chart2_values.append(product["totalSales"])
+        all_labels = list(set(chart1_labels) | set(chart2_labels))
+        for label in all_labels:
+            if label not in chart1_labels:
+                chart1_values.insert(all_labels.index(label),0)
+                chart3_values.insert(all_labels.index(label), 0)
+            if label not in chart2_labels:
+                chart2_values.insert(all_labels.index(label),0)
+                chart4_values.insert(all_labels.index(label), 0)
+        return self.render('admin/index.html', chart1_labels=all_labels, chart1_values=chart1_values,
+                           chart2_labels = all_labels, chart2_values = chart2_values,
+                           chart3_labels = all_labels, chart3_values = chart3_values,
+                           chart4_labels=all_labels, chart4_values=chart4_values,
+                           no_of_products=no_of_products,no_of_orders=no_of_orders,
+                           no_of_users=no_of_users, total_no_of_products_sold = total_no_of_products_sold,
+                           sales_percentage = sales_percentage)
+
+
 class ProductView(ModelView):
     column_list = ('product_name', 'category', 'description', 'size', 'barcode', 'brand', 'price', 'qty_in_stk', 'discount')
     form = AddProductForm
@@ -38,7 +113,7 @@ class UserView(ModelView):
     form = CustomerSignupForm
 
 
-admin = admin.Admin(app, template_mode='bootstrap4')
+admin = admin.Admin(app, template_mode='bootstrap4',index_view=MyHomeView())
 admin.add_view(ProductView(mongo.db.products))
 admin.add_view(UserView(mongo.db.customers))
 # admin.add_link(MenuLink(name='Public Website', category='', url=url_for('products.index')))
@@ -64,6 +139,34 @@ def method_not_allowed(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template("500.html", error=e)
+
+def revenue_last_x_days(start_days=7, end_days = 0):
+    startDate = datetime.now() - timedelta(start_days)
+    endDate = datetime.now() - timedelta(end_days)
+
+    x = (
+        mongo.db.orders.aggregate([
+        {
+            '$project': {
+            'order_date': {
+                '$dateFromString': {
+                    'dateString': '$order_date'
+                    }
+                },
+                'price':1,
+                'quantity':1,
+                'ordered_products':1
+            }
+        },
+        {
+            '$match': {
+                'order_date': {'$gte': startDate, '$lte': endDate}
+            }
+        }
+        ])
+    )
+    return x
+
 
 
 def promo_price(price, discount):
