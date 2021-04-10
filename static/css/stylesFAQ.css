@@ -1,11 +1,3 @@
-/* *,
-*::before,
-*::after{
-    margin: 0;
-    padding: 50;
-    box-sizing: inherit;
-}*/
-
 html{
     font-family: 'Roboto', sans-serif;
     font-size: 10px;
