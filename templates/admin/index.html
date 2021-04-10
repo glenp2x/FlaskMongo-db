@@ -405,7 +405,7 @@
     labels: {{ chart1_labels | safe }},
     datasets: [
       {
-        label: 'Digital Goods',
+        label: 'Current 3 days',
         backgroundColor: 'rgba(60,141,188,0.9)',
         borderColor: 'rgba(60,141,188,0.8)',
         pointRadius: false,
@@ -416,7 +416,7 @@
         data: {{ chart1_values | safe}}
       },
       {
-        label: 'Electronics',
+        label: 'Past 3 days',
         backgroundColor: 'rgba(210, 214, 222, 1)',
         borderColor: 'rgba(210, 214, 222, 1)',
         pointRadius: false,
@@ -456,6 +456,33 @@
     data: salesChartData,
     options: salesChartOptions
   })
+
+
+// Donut Chart
+  var pieChartCanvas = $('#sales-chart-canvas').get(0).getContext('2d')
+  var pieData        = {
+    labels: {{ chart1_labels | safe }},
+    datasets: [
+      {
+        data: {{ chart1_values | safe}},
+        backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#ca6ac7', '#9c6aca', '#3a38ce', '#6eae82', '#ca5f54'],
+      }
+    ]
+  }
+  var pieOptions = {
+    legend: {
+      display: false
+    },
+    maintainAspectRatio : false,
+    responsive : true,
+  }
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: pieData,
+    options: pieOptions
+  });
 
 
   //-------------

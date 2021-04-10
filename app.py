@@ -113,11 +113,17 @@ class UserView(ModelView):
     #form_edit_rules = ('password')
     form = UsersForm
 
+class MainIndexLink(MenuLink):
+    def get_url(self):
+        return url_for("products")
+
+
 
 admin = admin.Admin(app, template_mode='bootstrap4',index_view=MyHomeView())
+admin.add_link(MainIndexLink(name="Main Page"))
 admin.add_view(ProductView(mongo.db.products))
 admin.add_view(UserView(mongo.db.customers))
-# admin.add_link(MenuLink(name='Public Website', category='', url=url_for('products.index')))
+#admin.add_link(MenuLink(name='Back to Products', url=url_for('main.products')))
 
 
 @app.context_processor
