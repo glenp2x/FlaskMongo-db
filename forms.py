@@ -61,10 +61,10 @@ class ChangePersonalInfo(FlaskForm):
     firstName = StringField('First Name',validators=[DataRequired()])
     middleName = StringField('Middle Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
-    emailId = StringField('Email Id',validators=[DataRequired()])
-    phoneNo = StringField('Phone No',validators=[DataRequired()])
-    submit=SubmitField("Save Changes")
-    cancel=SubmitField('Cancel')
+    emailId = StringField('Email Id', validators=[DataRequired()])
+    phoneNo = StringField('Phone No', validators=[DataRequired()])
+    submit = SubmitField("Save Changes")
+    cancel = SubmitField('Cancel')
 
 
 class ChangeAddress(FlaskForm):
@@ -75,6 +75,7 @@ class ChangeAddress(FlaskForm):
     country= StringField('country', validators=[DataRequired()])
     submit = SubmitField("Save Changes")
     cancel = SubmitField("Cancel")
+
 
 class OrderForm(FlaskForm):
     card_number = StringField('Card Number', [DataRequired()])

@@ -311,7 +311,7 @@ def product_page(selected):
     return render_template('product_page.html', product=product)
 
 
-@app.route('/personal_info/')
+@app.route('/personal_info/', methods= ["GET","POST"])
 def personal_info():
     try:
         customer_list = mongo.db.customers
@@ -433,8 +433,17 @@ def address_info_return():
 def change_info():
     try:
         form = ChangePersonalInfo()
-        if request.method == "GET":
-            return render_template('includes/personal_info_change.html', title='Edit Personal Info', form=form)
+        all_orders = mongo.db.orders
+        order = all_orders.find_one({'customer': session['email']})
+        if request.method == "POST":
+            orders= mongo.db.orders
+            first_name=form.firstName.data
+            middle_name=form.middleName.data
+            last_name=form.lastName.data
+            email_id=form.emailId.data
+            phone_no=form.phoneNo.data
+            return render_template('includes/personal_info_change.html', title='Edit Personal Info', form=form,order=order)
+        return render_template('includes/personal_info_change.html', title='Edit Personal Info', form=form, order=order)
     except Exception as e:
         return str(e)
 

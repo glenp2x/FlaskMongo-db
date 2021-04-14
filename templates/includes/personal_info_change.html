@@ -2,7 +2,7 @@
 
 <div>
     <div class="box">
-        <form method="POST" action="/personal_info_change/">
+        <form method="POST" action="/personal_info/">
             <div class="title">
                 <h4>
                     <span class="fas fa-user-circle"></span>
@@ -12,24 +12,24 @@
                 </h4>
                 <table style="border-collapse:separate;border-spacing:20px ;">
                     <tr>
-                        <td>First Name :</td>
-                        <td><input type="text" name="firstname"  /></td>
+                        <td style="font-weight:bold; width:14%">First Name :</td>
+                        <td>{{form.firstName(class="form-control form-control-lg")}}</td>
                     </tr>
                     <tr>
-                        <td>Middle Name :</td>
-                        <td><input type="text" name="middlename"  /></td>
+                        <td style="font-weight:bold;">Middle Name :</td>
+                        <td>{{form.middleName(class="form-control form-control-lg")}}</td>
                     </tr>
                     <tr>
-                        <td >Last Name :</td>
-                        <td ><input type="text" name="LastName" /></td>
+                        <td style="font-weight:bold;">Last Name :</td>
+                        <td >{{form.lastName(class="form-control form-control-lg")}}</td>
                     </tr>
                     <tr>
-                        <td>Email id :</td>
-                        <td><input type="text" name="Emailid" /></td>
+                        <td style="font-weight:bold;">Email id :</td>
+                        <td>{{form.emailId(class="form-control form-control-lg")}}</td>
                     </tr>
                     <tr>
-                        <td>Phone :</td>
-                        <td><input type="text" name="Phone" /></td>
+                        <td style="font-weight:bold;">Phone :</td>
+                        <td>{{form.phoneNo(class="form-control form-control-lg")}}</td>
                     </tr>
                 </table>
                 <div class="form-group">

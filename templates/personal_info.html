@@ -1,41 +1,51 @@
 
 <div id="info_change">
-    <form class="box">
-        <form method="GET" action="/personal_info/">
+    <div class="box">
+        <!--<form method="GET" action="/personal_info/">-->
             <div class="title">
                 <h4>
                     <span class="fas fa-user-circle"></span>
                     <span>Personal Info</span>
                     <div style="float:right; margin-right:60px; font-size:18px">
-                        <button onclick = "RenderRequestedPage({{url_for('change_info')}})" >Edit info</button>
+                        <button type="button" class="btn ex" onclick = "RenderRequestedPage({{url_for('change_info')}})" >Edit info</button>
                     </div>
 
                 </h4>
                 <table style="border-collapse:separate;border-spacing:20px ;">
 
                         <tr>
-                            <td>First Name :</td>
-                            <td>{{order['name']}}</td>
+                            <td style="font-weight:bold; width:12%" >First Name :</td>
+                            <td >{{order['name']}}</td>
                         </tr>
 
                         <tr>
-                            <td >Last Name :</td>
+                            <td style="font-weight:bold;" >Last Name :</td>
                             <td >{{order['last_name']}}</td>
                         </tr>
                         <tr>
-                            <td>Email id :</td>
+                            <td style="font-weight:bold;">Email id :</td>
                             <td>{{order['email']}}</td>
                         </tr>
                         <tr>
-                            <td>Phone :</td>
-                            <td>{{order['phone']}}</td>
+                            <td style="font-weight:bold;">Phone :</td>
+                            <td>{{order['phone_number']}}</td>
                         </tr>
 
                 </table>
 
             </div>
-    </form>
-
+        <!--</form>-->
     </div>
-</div>
 
+
+</div>
+<style>
+    .ex{
+        border: 1px solid;
+        border-color: #ccc #ccc #bbb;
+        border-radius: 3px;
+        background: #e6e6e6;
+        color: rgba(0, 0, 0, 0.8);
+        line-height: 1;
+    }
+</style>
