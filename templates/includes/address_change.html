@@ -12,32 +12,32 @@
                 </h4>
                 <table style="border-collapse:separate;border-spacing:20px ;">
                     <tr>
-                        <td style="font-weight:bold;">Name : </td>
-                        <td><input type="text" name="name"  /></td>
+                        <td style="font-weight:bold;width:14%">Name : </td>
+                        <td>{{form.name(class="form-control form-control-lg")}}</td>
                     </tr>
 
                     <tr>
                         <td style="font-weight:bold;">Address Line : </td>
-                        <td><input type="text" name="addressLine"  /></td>
+                        <td>{{form.addressLine(class="form-control form-control-lg")}}</td>
                     </tr>
                     <tr>
                         <td style="font-weight:bold;">City :</td>
-                        <td><input type="text" name="city"  /></td>
+                        <td>{{form.city(class="form-control form-control-lg")}}</td>
                     </tr>
                     <tr>
                         <td style="font-weight:bold;">Postal Code : </td>
-                        <td><input type="text" name="postalCode"  /></td>
+                        <td>{{form.postalCode(class="form-control form-control-lg")}}</td>
                     </tr>
                     <tr>
                         <td style="font-weight:bold;">Country : </td>
-                        <td><input type="text" name="country"  /></td>
+                        <td>{{form.country(class="form-control form-control-lg")}}</td>
                     </tr>
                 </table>
 
 
             <div class="form-group">
                     {{form.submit(class="btn btn-primary")}}
-                    <a href="{{ url_for('address_info_return') }}" class="btn btn-secondary">Cancel</a>
+                    {{form.cancel(class="btn btn-danger" )}}
             </div>
             </div>
         </form>
